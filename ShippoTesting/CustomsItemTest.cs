@@ -3,7 +3,8 @@ using System;
 using System.Collections;
 
 using Shippo;
-
+using System.Collections.Generic;
+using Shippo.Models;
 
 namespace ShippoTesting {
     [TestFixture]
@@ -22,24 +23,24 @@ namespace ShippoTesting {
             CustomsItem testObject = CustomsItemTest.getDefaultObject();
             CustomsItem retrievedObject;
 
-            retrievedObject = apiResource.RetrieveCustomsItem((string) testObject.ObjectId);
+            retrievedObject = apiResource.RetrieveCustomsItem((string) testObject.ObjectId).Result;
             Assert.AreEqual(testObject.ObjectId, retrievedObject.ObjectId);
         }
 
         [Test]
         public void testListAll()
         {
-            Hashtable parameters = new Hashtable();
+            var parameters = new Dictionary<string, object>();
             parameters.Add("results", "1");
             parameters.Add("page", "1");
 
-            var parcels = apiResource.AllCustomsItems(parameters);
+            var parcels = apiResource.AllCustomsItems(parameters).Result;
             Assert.AreNotEqual(0, parcels.Data.Count);
         }
 
         public static CustomsItem getDefaultObject()
         {
-            Hashtable parameters = new Hashtable();
+            var parameters = new Dictionary<string, object>();
             parameters.Add("description", "T-Shirt");
             parameters.Add("quantity", "2");
             parameters.Add("net_weight", "400");
@@ -50,7 +51,7 @@ namespace ShippoTesting {
             parameters.Add("origin_country", "US");
             parameters.Add("metadata", "Order ID #123123");
 
-            return getAPIResource().CreateCustomsItem(parameters);
+            return GetAPIResource().CreateCustomsItem(parameters).Result;
         }
     }
 }

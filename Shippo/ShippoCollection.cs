@@ -1,6 +1,4 @@
 /*
- * Copyright 2012 Xamarin, Inc.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -19,9 +17,11 @@ using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
 
-namespace Shippo {
+namespace Shippo
+{
     [JsonObject(MemberSerialization.OptIn)]
-    public class ShippoCollection<T> : IEnumerable<T> {
+    public class ShippoCollection<T> : IEnumerable<T>
+    {
         [JsonProperty("url")]
         public string Url { get; set; }
 

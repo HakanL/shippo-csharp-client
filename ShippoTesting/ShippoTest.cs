@@ -3,29 +3,27 @@ using System;
 using System.Collections;
 
 using Shippo;
+using System.Collections.Generic;
 
-
-namespace ShippoTesting {
+namespace ShippoTesting
+{
     [TestFixture]
-    public class ShippoTest {
-		static internal APIResource apiResource;
+    public class ShippoTest
+    {
+        static internal ShippoClient apiResource;
         static internal String now;
-        public APIResource staticAPIResource;
+        public ShippoClient staticAPIResource;
 
-        [SetUp] public void Init()
+        [SetUp]
+        public void Init()
         {
-            apiResource = new APIResource("<Shippo Token>");
+            apiResource = new ShippoClient("<Shippo Token>");
             now = DateTime.Now.ToString("yyyy-MM-dd HH':'mm':'ss");
         }
 
-        public static APIResource getAPIResource()
+        public static ShippoClient GetAPIResource()
         {
             return apiResource;
-        }
-
-        public static Hashtable getInvalidHashtable()
-        {
-            return new Hashtable();
         }
     }
 }

@@ -1,9 +1,4 @@
 /*
- * Copyright 2011 Xamarin, Inc.
- *
- * Author(s):
- *  Gonzalo Paniagua Javier (gonzalo@xamarin.com)
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,13 +16,15 @@ using System.Net;
 
 using Newtonsoft.Json;
 
-namespace Shippo {
+namespace Shippo
+{
 
-    public class ShippoException : Exception {
-        public ShippoException(
-            string auxMessage, Exception inner ) :
-        base(auxMessage , inner)
-        {}
+    public class ShippoException : Exception
+    {
+        public ShippoException(string auxMessage, Exception inner) :
+            base(auxMessage, inner)
+        {
+        }
     }
 }
 

@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 using Shippo;
-
+using Shippo.Models;
 
 namespace ShippoTesting {
     [TestFixture]
@@ -31,17 +31,17 @@ namespace ShippoTesting {
         [Test]
         public void testListAll()
         {
-            Hashtable parameters = new Hashtable();
+            var parameters = new Dictionary<string, object>();
             parameters.Add("results", "1");
             parameters.Add("page", "1");
 
-            var parcels = apiResource.AllTransactions(parameters);
+            var parcels = apiResource.AllTransactions(parameters).Result;
             Assert.AreNotEqual(0, parcels.Data.Count);
         }
 
         public static Transaction getDefaultObject()
         {
-            Hashtable parameters = new Hashtable();
+            var parameters = new Dictionary<string, object>();
 
             ShippoCollection<Rate> rateCollection = RateTest.getDefaultObject();
             List<Rate> rateList = rateCollection.Data;
@@ -50,7 +50,7 @@ namespace ShippoTesting {
             parameters.Add("rate", rateArray [0].ObjectId);
             parameters.Add("metadata", "Customer ID 123456");
 
-            return getAPIResource().CreateTransactionSync(parameters);
+            return GetAPIResource().CreateTransactionSync(parameters).Result;
         }
     }
 }

@@ -3,7 +3,8 @@ using System;
 using System.Collections;
 
 using Shippo;
-
+using System.Collections.Generic;
+using Shippo.Models;
 
 namespace ShippoTesting
 {
@@ -16,7 +17,7 @@ namespace ShippoTesting
         [Test]
         public void TestValidGetStatus()
         {
-            Track track = getAPIResource().RetrieveTracking(CARRIER, TRACKING_NO);
+            Track track = GetAPIResource().RetrieveTracking(CARRIER, TRACKING_NO).Result;
             Assert.AreEqual(TRACKING_NO, track.TrackingNumber);
             Assert.IsNotNull(track.TrackingStatus);
             Assert.IsNotNull(track.TrackingHistory);
@@ -25,19 +26,19 @@ namespace ShippoTesting
         [Test]
         public void TestInvalidGetStatus()
         {
-            Assert.That(() => getAPIResource().RetrieveTracking(CARRIER, "INVALID_ID"),
+            Assert.That(() => GetAPIResource().RetrieveTracking(CARRIER, "INVALID_ID"),
                         Throws.TypeOf<ShippoException>());
         }
 
         [Test]
         public void TestValidRegisterWebhook()
         {
-            Track track = getAPIResource().RetrieveTracking(CARRIER, TRACKING_NO);
+            Track track = GetAPIResource().RetrieveTracking(CARRIER, TRACKING_NO).Result;
 
-            Hashtable parameters = new Hashtable();
+            var parameters = new Dictionary<string, object>();
             parameters.Add("carrier", CARRIER);
             parameters.Add("tracking_number", track.TrackingNumber);
-            Track register = getAPIResource().RegisterTrackingWebhook(parameters);
+            Track register = GetAPIResource().RegisterTrackingWebhook(parameters).Result;
             Assert.IsNotNull(register.TrackingNumber);
             Assert.IsNotNull(register.TrackingHistory);
         }
@@ -45,10 +46,10 @@ namespace ShippoTesting
         [Test]
         public void TestInvalidRegisterWebhook()
         {
-            Hashtable parameters = new Hashtable();
+            var parameters = new Dictionary<string, object>();
             parameters.Add("carrier", CARRIER);
             parameters.Add("tracking_number", "INVALID_ID");
-            Assert.That(() => getAPIResource().RegisterTrackingWebhook(parameters),
+            Assert.That(() => GetAPIResource().RegisterTrackingWebhook(parameters),
                         Throws.TypeOf<ShippoException>());
         }
     }

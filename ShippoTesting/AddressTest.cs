@@ -2,63 +2,73 @@
 using System;
 using System.Collections;
 using Shippo;
+using System.Collections.Generic;
+using Shippo.Models;
 
-namespace ShippoTesting {
+namespace ShippoTesting
+{
     [TestFixture]
-    public class AddressTest : ShippoTest {
+    public class AddressTest : ShippoTest
+    {
 
         [Test]
         public void TestValidCreate()
         {
-            Address testObject = AddressTest.getDefaultObject();
+            Address testObject = AddressTest.GetDefaultObject();
             Assert.AreEqual(true, testObject.IsComplete);
         }
 
         [Test]
-        public void testValidRetrieve()
+        public void TestValidRetrieve()
         {
-            Address testObject = AddressTest.getDefaultObject();
+            Address testObject = AddressTest.GetDefaultObject();
             Address retrievedObject;
 
-            retrievedObject = apiResource.RetrieveAddress((string) testObject.ObjectId);
+            retrievedObject = apiResource.RetrieveAddress((string)testObject.ObjectId).Result;
             Assert.AreEqual(testObject.ObjectId, retrievedObject.ObjectId);
         }
 
-        public static Address getDefaultObject()
+        public static Address GetDefaultObject()
         {
-            Hashtable parameters = new Hashtable();
-            parameters.Add("name", "Undefault New Wu");
-            parameters.Add("company", "Shippo");
-            parameters.Add("street_no", "215");
-            parameters.Add("street1", "Clayton St.");
-            parameters.Add("street2", null);
-            parameters.Add("city", "San Francisco");
-            parameters.Add("state", "CA");
-            parameters.Add("zip", "94117");
-            parameters.Add("country", "US");
-            parameters.Add("phone", "+1 555 341 9393");
-            parameters.Add("email", "laura@goshipppo.com");
-            parameters.Add("metadata", "Customer ID 123456");
-            parameters.Add("validate", "true");
-            return getAPIResource().CreateAddress(parameters);
+            var parameters = new CreateAddress
+            {
+                Name = "Undefault New Wu",
+                Company = "Shippo",
+                StreetNo = "215",
+                Street1 = "Clayton St.",
+                Street2 = null,
+                City = "San Francisco",
+                State = "CA",
+                Zip = "94117",
+                Country = "US",
+                Phone = "+1 555 341 9393",
+                Email = "laura@goshipppo.com",
+                Metadata = "Customer ID 123456",
+                Validate = true
+            };
+
+            return GetAPIResource().CreateAddress(parameters).Result;
         }
-		public static Address getDefaultObject_2()
-		{
-			Hashtable parameters = new Hashtable();
-			parameters.Add("name", "Undefault New Wu");
-			parameters.Add("company", "Shippo");
-			parameters.Add("street1", "Francis St.");
-			parameters.Add("street_no", "56");
-			parameters.Add("street2", null);
-			parameters.Add("city", "San Francisco");
-			parameters.Add("state", "CA");
-			parameters.Add("zip", "94112");
-			parameters.Add("country", "US");
-			parameters.Add("phone", "+1 555 341 9393");
-			parameters.Add("email", "hippo@goshipppo.com");
-			parameters.Add("metadata", "Customer ID 123456");
-			return getAPIResource().CreateAddress(parameters);
-		}
+
+        public static Address GetDefaultObject_2()
+        {
+            var parameters = new CreateAddress
+            {
+                Name = "Undefault New Wu",
+                Company = "Shippo",
+                Street1 = "Francis St.",
+                StreetNo = "56",
+                Street2 = null,
+                City = "San Francisco",
+                State = "CA",
+                Zip = "94112",
+                Country = "US",
+                Phone = "+1 555 341 9393",
+                Email = "hippo@goshipppo.com",
+                Metadata = "Customer ID 123456"
+            };
+
+            return GetAPIResource().CreateAddress(parameters).Result;
+        }
     }
 }
-

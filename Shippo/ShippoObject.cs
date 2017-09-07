@@ -1,9 +1,4 @@
 /*
- * Copyright 2011 Joe Dluzen, 2012 Xamarin, Inc.
- *
- * Author(s):
- *  Joe Dluzen (jdluzen@gmail.com)
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -22,22 +17,11 @@ using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace Shippo {
-    public class ShippoObject {
-        [JsonProperty(PropertyName = "object")]
-        public ShippoObjectType Object { get; set; }
-
-    }
-
-
-    public class ShippoId : ShippoObject {
+namespace Shippo
+{
+    public class ShippoId
+    {
         [JsonProperty(PropertyName = "object_id")]
         public string ObjectId { get; set; }
-    }
-
-    [JsonConverter(typeof(ShippoEnumConverter<ShippoObjectType>))]
-    public enum ShippoObjectType
-    {
-        Unknown,
     }
 }

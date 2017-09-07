@@ -1,9 +1,4 @@
 ﻿/*
- * Copyright 2011 Xamarin, Inc.
- *
- * Author(s):
- * 	Gonzalo Paniagua Javier (gonzalo@xamarin.com)
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,8 +13,10 @@
  */
 using System;
 
-namespace Shippo {
-    public static class DateTimeExtensions {
+namespace Shippo
+{
+    public static class DateTimeExtensions
+    {
         static DateTime epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         public static DateTime FromUnixEpoch(this int utc_unix)
@@ -41,7 +38,7 @@ namespace Shippo {
         public static long UnixTimeNow()
         {
             var timeSpan = (DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0));
-            return (long) timeSpan.TotalSeconds;
+            return (long)timeSpan.TotalSeconds;
         }
     }
 }

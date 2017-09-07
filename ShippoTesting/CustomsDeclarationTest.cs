@@ -6,7 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 using Shippo;
-
+using Shippo.Models;
 
 namespace ShippoTesting {
     [TestFixture]
@@ -25,25 +25,25 @@ namespace ShippoTesting {
             CustomsDeclaration testObject = CustomsDeclarationTest.getDefaultObject();
             CustomsDeclaration retrievedObject;
 
-            retrievedObject = apiResource.RetrieveCustomsDeclaration((string) testObject.ObjectId);
+            retrievedObject = apiResource.RetrieveCustomsDeclaration((string) testObject.ObjectId).Result;
             Assert.AreEqual(testObject.ObjectId, retrievedObject.ObjectId);
         }
 
         [Test]
         public void testListAll()
         {
-            Hashtable parameters = new Hashtable();
+            var parameters = new Dictionary<string, object>();
             parameters.Add("results", "1");
             parameters.Add("page", "1");
 
-            var parcels = apiResource.AllCustomsDeclarations(parameters);
+            var parcels = apiResource.AllCustomsDeclarations(parameters).Result;
             Assert.AreNotEqual(0, parcels.Data.Count);
         }
 
         public static CustomsDeclaration getDefaultObject()
         {
             CustomsItem customsItem = CustomsItemTest.getDefaultObject();
-            Hashtable parameters = new Hashtable();
+            var parameters = new Dictionary<string, object>();
             parameters.Add("exporter_reference", "");
             parameters.Add("importer_reference", "");
             parameters.Add("contents_type", "MERCHANDISE");
@@ -67,7 +67,7 @@ namespace ShippoTesting {
 
             parameters.Add("items", customsItems);
             parameters.Add("metadata", "Order ID #123123");
-            return getAPIResource().CreateCustomsDeclaration(parameters);
+            return GetAPIResource().CreateCustomsDeclaration(parameters).Result;
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 using Shippo;
-
+using Shippo.Models;
 
 namespace ShippoTesting
 {
@@ -24,26 +24,26 @@ namespace ShippoTesting
             Manifest testObject = ManifestTest.getDefaultObject();
             Manifest retrievedObject;
 
-            retrievedObject = apiResource.RetrieveManifest((string) testObject.ObjectId);
+            retrievedObject = apiResource.RetrieveManifest((string) testObject.ObjectId).Result;
             Assert.AreEqual(testObject.ObjectId, retrievedObject.ObjectId);
         }
 
         [Test]
         public void testListAll()
         {
-            Hashtable parameters = new Hashtable();
+            var parameters = new Dictionary<string, object>();
             parameters.Add("results", "1");
             parameters.Add("page", "1");
 
-            var Manifests = apiResource.AllManifests(parameters);
+            var Manifests = apiResource.AllManifests(parameters).Result;
             Assert.AreEqual(0, Manifests.Data.Count);
         }
 
         public static Manifest getDefaultObject()
         {
-            Hashtable parameters0 = new Hashtable();
-            Address addressFrom = AddressTest.getDefaultObject();
-            Address addressTo = AddressTest.getDefaultObject_2();
+            var parameters0 = new Dictionary<string, object>();
+            Address addressFrom = AddressTest.GetDefaultObject();
+            Address addressTo = AddressTest.GetDefaultObject_2();
             Parcel parcel = ParcelTest.getDefaultObject();
             parameters0.Add("address_from", addressFrom.ObjectId);
             parameters0.Add("address_to", addressTo.ObjectId);
@@ -56,21 +56,21 @@ namespace ShippoTesting
             parameters0.Add("metadata", "Customer ID 123456");
             parameters0.Add("async", false);
 
-            Shipment shipment = getAPIResource().CreateShipment(parameters0);
-            Hashtable parameters1 = new Hashtable();
+            Shipment shipment = GetAPIResource().CreateShipment(parameters0).Result;
+            var parameters1 = new Dictionary<string, object>();
             parameters1.Add("id", shipment.ObjectId);
             parameters1.Add("currency_code", "USD");
 
-            ShippoCollection<Rate> rateCollection = getAPIResource().GetShippingRatesSync(parameters1);
+            ShippoCollection<Rate> rateCollection = GetAPIResource().GetShippingRatesSync(parameters1).Result;
             List<Rate> rateList = rateCollection.Data;
             Rate[] rateArray = rateList.ToArray();
 
             parameters1.Add("rate", rateArray [0].ObjectId);
             parameters1.Add("metadata", "Customer ID 123456");
 
-            Transaction transaction = getAPIResource().CreateTransactionSync(parameters1);
+            Transaction transaction = GetAPIResource().CreateTransactionSync(parameters1).Result;
 
-            Hashtable parameters2 = new Hashtable();
+            var parameters2 = new Dictionary<string, object>();
             parameters2.Add("provider", "USPS");
             parameters2.Add("shipment_date", now);
             parameters2.Add("address_from", addressFrom.ObjectId);
@@ -78,7 +78,7 @@ namespace ShippoTesting
             transactions.Add(transaction.ObjectId);
             parameters2.Add("transactions", transactions);
 
-            return getAPIResource().CreateManifest(parameters2);
+            return GetAPIResource().CreateManifest(parameters2).Result;
         }
     }
 }

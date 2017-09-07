@@ -4,7 +4,8 @@ using System.Collections;
 using System.Threading;
 
 using Shippo;
-
+using System.Collections.Generic;
+using Shippo.Models;
 
 namespace ShippoTesting {
     [TestFixture]
@@ -20,12 +21,12 @@ namespace ShippoTesting {
         public static ShippoCollection<Rate> getDefaultObject()
         {
             Shipment testObject = ShipmentTest.getDefaultObject();
-            Hashtable parameters = new Hashtable();
+            var parameters = new Dictionary<string, object>();
             parameters.Add("id", testObject.ObjectId);
             parameters.Add("currency_code", "USD");
 
             // Use Synchronized rates method
-            return getAPIResource().GetShippingRatesSync(parameters);
+            return GetAPIResource().GetShippingRatesSync(parameters).Result;
         }
     }
 }

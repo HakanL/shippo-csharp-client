@@ -3,7 +3,8 @@ using System;
 using System.Collections;
 
 using Shippo;
-
+using System.Collections.Generic;
+using Shippo.Models;
 
 namespace ShippoTesting {
     [TestFixture]
@@ -22,26 +23,26 @@ namespace ShippoTesting {
             Shipment testObject = ShipmentTest.getDefaultObject();
             Shipment retrievedObject;
 
-            retrievedObject = apiResource.RetrieveShipment((string) testObject.ObjectId);
+            retrievedObject = apiResource.RetrieveShipment((string) testObject.ObjectId).Result;
             Assert.AreEqual(testObject.ObjectId, retrievedObject.ObjectId);
         }
 
         [Test]
         public void testListAll()
         {
-            Hashtable parameters = new Hashtable();
+            var parameters = new Dictionary<string, object>();
             parameters.Add("results", "1");
             parameters.Add("page", "1");
 
-            var parcels = apiResource.AllShipments(parameters);
+            var parcels = apiResource.AllShipments(parameters).Result;
             Assert.AreNotEqual(0, parcels.Data.Count);
         }
 
         public static Shipment getDefaultObject()
         {
-            Hashtable parameters = new Hashtable();
-            Address addressFrom = AddressTest.getDefaultObject();
-            Address addressTo = AddressTest.getDefaultObject_2();
+            var parameters = new Dictionary<string, object>();
+            Address addressFrom = AddressTest.GetDefaultObject();
+            Address addressTo = AddressTest.GetDefaultObject_2();
             Parcel parcel = ParcelTest.getDefaultObject();
             parameters.Add("address_from", addressFrom.ObjectId);
             parameters.Add("address_to", addressTo.ObjectId);
@@ -54,7 +55,7 @@ namespace ShippoTesting {
             parameters.Add("metadata", "Customer ID 123456");
             parameters.Add("async", false);
 
-            return getAPIResource().CreateShipment(parameters);
+            return GetAPIResource().CreateShipment(parameters).Result;
         }
     }
 }
