@@ -1,4 +1,4 @@
-﻿﻿using NUnit.Framework;
+﻿using NUnit.Framework;
 using System;
 using System.Collections;
 
@@ -6,31 +6,33 @@ using Shippo;
 using System.Collections.Generic;
 using Shippo.Models;
 
-namespace ShippoTesting {
+namespace ShippoTesting
+{
     [TestFixture]
-    public class ParcelTest : ShippoTest {
+    public class ParcelTest : ShippoTest
+    {
 
         [Test]
         public void TestValidCreate()
         {
-            Parcel testObject = ParcelTest.getDefaultObject();
+            Parcel testObject = ParcelTest.GetDefaultObject();
             Assert.AreEqual("VALID", testObject.ObjectState);
         }
 
         [Test]
-        public void testValidRetrieve()
+        public void TestValidRetrieve()
         {
-            Parcel testObject = ParcelTest.getDefaultObject();
+            Parcel testObject = ParcelTest.GetDefaultObject();
             Parcel retrievedObject;
 
-            retrievedObject = apiResource.RetrieveParcel((string) testObject.ObjectId).Result;
+            retrievedObject = apiResource.RetrieveParcel((string)testObject.ObjectId).Result;
             Assert.AreEqual(testObject.ObjectId, retrievedObject.ObjectId);
         }
 
         [Test]
-        public void testListAll()
+        public void TestListAll()
         {
-            var parameters = new Dictionary<string, object>();
+            var parameters = new Dictionary<string, string>();
             parameters.Add("results", "10");
             parameters.Add("page", "1");
 
@@ -38,17 +40,19 @@ namespace ShippoTesting {
             Assert.AreNotEqual(0, parcels.Data.Count);
         }
 
-        public static Parcel getDefaultObject()
+        public static Parcel GetDefaultObject()
         {
-            var parameters = new Dictionary<string, object>();
-            parameters.Add("length", "5");
-            parameters.Add("width", "5");
-            parameters.Add("height", "5");
-            parameters.Add("distance_unit", "cm");
-            parameters.Add("weight", "2");
-            parameters.Add("mass_unit", "lb");
-            parameters.Add("template", null);
-            parameters.Add("metadata", "Customer ID 123456");
+            var parameters = new CreateParcel
+            {
+                Length = 5,
+                Width = 5,
+                Height = 5,
+                DistanceUnit = DistanceUnits.cm,
+                Weight = 2,
+                MassUnit = MassUnits.lb,
+                Template = null,
+                Metadata = "Customer ID 123456"
+            };
 
             return GetAPIResource().CreateParcel(parameters).Result;
         }

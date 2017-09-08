@@ -54,16 +54,5 @@ namespace Shippo.Models
 
         [JsonProperty(PropertyName = "test")]
         public bool? Test;
-
-        public static Shipment createForBatch(Address addressFrom,
-                                              Address addressTo, Parcel[] parcels)
-        {
-            Shipment s = new Shipment();
-            s.AddressFrom = addressFrom;
-            s.AddressTo = addressTo;
-            s.Parcels = parcels;
-            return s;
-        }
     }
 }
-

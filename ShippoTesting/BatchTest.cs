@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 
@@ -10,7 +10,7 @@ namespace ShippoTesting
     [TestFixture]
     public class BatchTest : ShippoTest
     {
-        void HandleFunc() {}
+        void HandleFunc() { }
 
         [Test]
         public void TestValidCreate()
@@ -49,7 +49,7 @@ namespace ShippoTesting
             Assert.AreEqual(batch.Status, ShippoEnums.Statuses.VALIDATING);
 
             List<String> shipmentIds = new List<String>();
-            Shipment shipment = ShipmentTest.getDefaultObject();
+            Shipment shipment = ShipmentTest.GetDefaultObject();
             shipmentIds.Add(shipment.ObjectId);
 
             Batch retrieve = getValidBatch(batch.ObjectId);
@@ -63,7 +63,7 @@ namespace ShippoTesting
         {
             List<String> shipmentIds = new List<String>();
             shipmentIds.Add("123");
-			Assert.That(() => GetAPIResource().AddShipmentsToBatch("INVALID_ID", shipmentIds),
+            Assert.That(() => GetAPIResource().AddShipmentsToBatch("INVALID_ID", shipmentIds),
                          Throws.TypeOf<ShippoException>());
         }
 
@@ -74,7 +74,7 @@ namespace ShippoTesting
             Assert.AreEqual(batch.Status, ShippoEnums.Statuses.VALIDATING);
 
             List<String> shipmentIds = new List<String>();
-            Shipment shipment = ShipmentTest.getDefaultObject();
+            Shipment shipment = ShipmentTest.GetDefaultObject();
             shipmentIds.Add(shipment.ObjectId);
 
             Batch retrieve = getValidBatch(batch.ObjectId);
@@ -121,7 +121,8 @@ namespace ShippoTesting
         {
             Batch batch;
             int retries = 10;
-            for (; retries > 0; retries--) {
+            for (; retries > 0; retries--)
+            {
                 batch = GetAPIResource().RetrieveBatch(id, 0, ShippoEnums.ObjectResults.none).Result;
                 if (batch.Status == ShippoEnums.Statuses.VALID)
                     return batch;
@@ -137,24 +138,30 @@ namespace ShippoTesting
             // other words, remove the depedence on a USPS carrier account to exist.
             ShippoCollection<CarrierAccount> carrierAccounts = GetAPIResource().AllCarrierAccount().Result;
             string defaultCarrierAccount = "";
-            foreach (CarrierAccount account in carrierAccounts) {
+            foreach (CarrierAccount account in carrierAccounts)
+            {
                 if (account.Carrier.ToString() == "usps")
                     defaultCarrierAccount = account.ObjectId;
             }
 
-            Address addressFrom = Address.CreateForPurchase("Mr. Hippo", "965 Mission St.", "Ste 201", "SF",
+            var addressFrom = CreateAddress.CreateForPurchase("Mr. Hippo", "965 Mission St.", "Ste 201", "SF",
                                                             "CA", "94103", "US", "4151234567", "ship@gmail.com");
-            Address addressTo = Address.CreateForPurchase("Mrs. Hippo", "965 Missions St.", "Ste 202", "SF",
+            var addressTo = CreateAddress.CreateForPurchase("Mrs. Hippo", "965 Missions St.", "Ste 202", "SF",
                                                           "CA", "94103", "US", "4151234568", "msship@gmail.com");
-            Parcel[] parcels = {Parcel.createForShipment(5, 5, 5, "in", 2, "oz")};
-            Shipment shipment = Shipment.createForBatch(addressFrom, addressTo, parcels);
-            BatchShipment batchShipment = BatchShipment.createForBatchShipments(defaultCarrierAccount, "usps_priority", shipment);
+            CreateParcel[] parcels = { CreateParcel.CreateForShipment(5, 5, 5, DistanceUnits.@in, 2, MassUnits.oz) };
+            var shipment = CreateShipment.CreateForBatch(addressFrom, addressTo, parcels);
+            var batchShipment = BatchShipment.CreateForBatchShipments(defaultCarrierAccount, "usps_priority", shipment);
 
-            List<BatchShipment> batchShipments = new List<BatchShipment>();
+            var batchShipments = new List<BatchShipment>();
             batchShipments.Add(batchShipment);
 
-            Batch batch = GetAPIResource().CreateBatch(defaultCarrierAccount, "usps_priority", ShippoEnums.LabelFiletypes.PDF_4x6,
-                                                       "BATCH #170", batchShipments).Result;
+            Batch batch = GetAPIResource().CreateBatch(
+                defaultCarrierAccount,
+                "usps_priority",
+                ShippoEnums.LabelFiletypes.PDF_4x6,
+                "BATCH #170",
+                batchShipments).Result;
+
             Assert.AreEqual(ShippoEnums.Statuses.VALIDATING, batch.Status);
             return batch;
         }

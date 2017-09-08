@@ -12,10 +12,16 @@
  * limitations under the License.
  */
 using System;
+using System.Collections;
 using System.Text;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
-namespace Shippo {
-    public interface IUrlEncoderInfo {
-        void UrlEncode(StringBuilder sb);
+namespace Shippo.Models
+{
+    public class ShippoId
+    {
+        [JsonProperty(PropertyName = "object_id")]
+        public string ObjectId { get; set; }
     }
 }

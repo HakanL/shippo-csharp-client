@@ -35,19 +35,24 @@ namespace ShippoExample
                     defaultCarrierAccount = account.ObjectId;
             }
 
-            Address addressFrom = Address.CreateForPurchase("Mr. Hippo", "965 Mission St.", "Ste 201", "SF",
+            var addressFrom = CreateAddress.CreateForPurchase("Mr. Hippo", "965 Mission St.", "Ste 201", "SF",
                                                             "CA", "94103", "US", "4151234567", "ship@gmail.com");
-            Address addressTo = Address.CreateForPurchase("Mrs. Hippo", "965 Missions St.", "Ste 202", "SF",
+            var addressTo = CreateAddress.CreateForPurchase("Mrs. Hippo", "965 Missions St.", "Ste 202", "SF",
                                                           "CA", "94103", "US", "4151234568", "msship@gmail.com");
-            Parcel[] parcels = { Parcel.createForShipment(5, 5, 5, "in", 2, "oz") };
-            Shipment shipment = Shipment.createForBatch(addressFrom, addressTo, parcels);
-            BatchShipment batchShipment = BatchShipment.createForBatchShipments(defaultCarrierAccount, "usps_priority", shipment);
+            CreateParcel[] parcels = { CreateParcel.CreateForShipment(5, 5, 5, DistanceUnits.@in, 2, MassUnits.oz) };
+            var shipment = CreateShipment.CreateForBatch(addressFrom, addressTo, parcels);
+            var batchShipment = BatchShipment.CreateForBatchShipments(defaultCarrierAccount, "usps_priority", shipment);
 
-            List<BatchShipment> batchShipments = new List<BatchShipment>();
+            var batchShipments = new List<BatchShipment>();
             batchShipments.Add(batchShipment);
 
-            Batch batch = await resource.CreateBatch(defaultCarrierAccount, "usps_priority", ShippoEnums.LabelFiletypes.PDF_4x6,
-                                               "BATCH #170", batchShipments);
+            Batch batch = await resource.CreateBatch(
+                defaultCarrierAccount,
+                "usps_priority",
+                ShippoEnums.LabelFiletypes.PDF_4x6,
+                "BATCH #170",
+                batchShipments);
+
             Console.WriteLine("Batch Status = " + batch.Status);
             Console.WriteLine("Metadata = " + batch.Metadata);
         }
@@ -70,7 +75,7 @@ namespace ShippoExample
                 Street2 = null,
                 City = "Toronto",
                 State = "ON",
-                Zip = "M5J 2X2",
+                PostalCode = "M5J 2X2",
                 Country = "CA",
                 Phone = "+1 555 341 9393",
                 Email = "hippo@goshippo.com",
@@ -95,56 +100,63 @@ namespace ShippoExample
             // replace with your Shippo Token
             // don't have one? get more info here
             // (https://goshippo.com/docs/#overview)
-            ShippoClient resource = new ShippoClient("<YourShippoToken>");
+            var client = new ShippoClient("<YourShippoToken>");
 
             // to address
-            var toAddressTable = new Dictionary<string, object>();
-            toAddressTable.Add("name", "Mr. Hippo");
-            toAddressTable.Add("company", "Shippo");
-            toAddressTable.Add("street1", "215 Clayton St.");
-            toAddressTable.Add("city", "San Francisco");
-            toAddressTable.Add("state", "CA");
-            toAddressTable.Add("zip", "94117");
-            toAddressTable.Add("country", "US");
-            toAddressTable.Add("phone", "+1 555 341 9393");
-            toAddressTable.Add("email", "support@goshipppo.com");
+            var toAddressTable = new CreateAddress
+            {
+                Name = "Mr. Hippo",
+                Company = "Shippo",
+                Street1 = "215 Clayton St.",
+                City = "San Francisco",
+                State = "CA",
+                PostalCode = "94117",
+                Country = "US",
+                Phone = "+1 555 341 9393",
+                Email = "support@goshipppo.com"
+            };
 
             // from address
-            var fromAddressTable = new Dictionary<string, object>();
-            fromAddressTable.Add("name", "Ms Hippo");
-            fromAddressTable.Add("company", "San Diego Zoo");
-            fromAddressTable.Add("street1", "2920 Zoo Drive");
-            fromAddressTable.Add("city", "San Diego");
-            fromAddressTable.Add("state", "CA");
-            fromAddressTable.Add("zip", "92101");
-            fromAddressTable.Add("country", "US");
-            fromAddressTable.Add("email", "hippo@goshipppo.com");
-            fromAddressTable.Add("phone", "+1 619 231 1515");
-            fromAddressTable.Add("metadata", "Customer ID 123456");
+            var fromAddressTable = new CreateAddress
+            {
+                Name = "Ms Hippo",
+                Company = "San Diego Zoo",
+                Street1 = "2920 Zoo Drive",
+                City = "San Diego",
+                State = "CA",
+                PostalCode = "92101",
+                Country = "US",
+                Email = "hippo@goshipppo.com",
+                Phone = "+1 619 231 1515",
+                Metadata = "Customer ID 123456"
+            };
 
             // parcel
-            var parcelTable = new Dictionary<string, object>();
-            parcelTable.Add("length", "5");
-            parcelTable.Add("width", "5");
-            parcelTable.Add("height", "5");
-            parcelTable.Add("distance_unit", "in");
-            parcelTable.Add("weight", "2");
-            parcelTable.Add("mass_unit", "lb");
-            var parcels = new List<Dictionary<string, object>>();
+            var parcelTable = new CreateParcel
+            {
+                Length = 5,
+                Width = 5,
+                Height = 5,
+                DistanceUnit = DistanceUnits.@in,
+                Weight = 2,
+                MassUnit = MassUnits.lb
+            };
+            var parcels = new List<CreateParcel>();
             parcels.Add(parcelTable);
 
 
             // shipment
-            var shipmentTable = new Dictionary<string, object>();
-            shipmentTable.Add("address_to", toAddressTable);
-            shipmentTable.Add("address_from", fromAddressTable);
-            shipmentTable.Add("parcels", parcels);
-            shipmentTable.Add("object_purpose", "PURCHASE");
-            shipmentTable.Add("async", false);
+            var shipmentTable = new CreateShipment
+            {
+                AddressTo = toAddressTable,
+                AddressFrom = fromAddressTable,
+                Parcels = (object[])parcels.ToArray(),
+                Async = false
+            };
 
             // create Shipment object
             Console.WriteLine("Creating Shipment object..");
-            Shipment shipment = resource.CreateShipment(shipmentTable).Result;
+            Shipment shipment = client.CreateShipment(shipmentTable).Result;
 
             // select desired shipping rate according to your business logic
             // we simply select the first rate in this example
@@ -154,7 +166,7 @@ namespace ShippoExample
             var transactionParameters = new Dictionary<string, object>();
             transactionParameters.Add("rate", rate.ObjectId);
             transactionParameters.Add("async", false);
-            Transaction transaction = resource.CreateTransaction(transactionParameters).Result;
+            Transaction transaction = client.CreateTransaction(transactionParameters).Result;
 
             if (((String)transaction.Status).Equals("SUCCESS", StringComparison.OrdinalIgnoreCase))
             {
@@ -167,13 +179,13 @@ namespace ShippoExample
             }
 
             Console.WriteLine("\nBatch\n");
-            Task.Run(async () => await RunBatchExample(resource)).Wait();
+            Task.Run(async () => await RunBatchExample(client)).Wait();
 
             Console.WriteLine("\nTrack\n");
-            Task.Run(async () => await RunTrackingExample(resource)).Wait();
+            Task.Run(async () => await RunTrackingExample(client)).Wait();
 
             Console.WriteLine("\nValidating International Address\n");
-            Task.Run(async () => await RunInternationalAddressValidationExample(resource)).Wait();
+            Task.Run(async () => await RunInternationalAddressValidationExample(client)).Wait();
         }
     }
 }

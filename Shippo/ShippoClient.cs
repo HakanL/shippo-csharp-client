@@ -70,12 +70,28 @@ namespace Shippo
             return str.ToString();
         }
 
+        private string GenerateURLEncodedFromHashmap(IDictionary<string, string> propertyMap)
+        {
+            var str = new StringBuilder();
+            foreach (var pair in propertyMap)
+            {
+                str.AppendFormat("{0}={1}&", pair.Key, pair.Value);
+            }
+            str.Length--;
+
+            return str.ToString();
+        }
+
         // Serialize parameters into JSON for POST requests
         private string Serialize<T>(T data)
         {
-            var settings = new JsonSerializerSettings();
-            settings.NullValueHandling = NullValueHandling.Ignore;
+            var settings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            };
+
             settings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
+
             return JsonConvert.SerializeObject(data, settings);
         }
 
@@ -100,7 +116,7 @@ namespace Shippo
             return await this.apiClient.DoRequestAsync<Address>(ep, HttpMethod.Get);
         }
 
-        public async Task<ShippoCollection<Address>> AllAddresss(IDictionary<string, object> parameters)
+        public async Task<ShippoCollection<Address>> AllAddresses(IDictionary<string, string> parameters)
         {
             string ep = string.Format("{0}/addresses?{1}", apiEndpoint, GenerateURLEncodedFromHashmap(parameters));
             return await this.apiClient.DoRequestAsync<ShippoCollection<Address>>(ep, HttpMethod.Get);
@@ -110,10 +126,10 @@ namespace Shippo
 
         #region Parcel
 
-        public async Task<Parcel> CreateParcel(IDictionary<string, object> parameters)
+        public async Task<Parcel> CreateParcel(CreateParcel createParcel)
         {
             string ep = string.Format("{0}/parcels", apiEndpoint);
-            return await this.apiClient.DoRequestAsync<Parcel>(ep, HttpMethod.Post, Serialize(parameters));
+            return await this.apiClient.DoRequestAsync<Parcel>(ep, HttpMethod.Post, Serialize(createParcel));
         }
 
         public async Task<Parcel> RetrieveParcel(string id)
@@ -122,7 +138,7 @@ namespace Shippo
             return await this.apiClient.DoRequestAsync<Parcel>(ep, HttpMethod.Get);
         }
 
-        public async Task<ShippoCollection<Parcel>> AllParcels(IDictionary<string, object> parameters)
+        public async Task<ShippoCollection<Parcel>> AllParcels(IDictionary<string, string> parameters)
         {
             string ep = string.Format("{0}/parcels?{1}", apiEndpoint, GenerateURLEncodedFromHashmap(parameters));
             return await this.apiClient.DoRequestAsync<ShippoCollection<Parcel>>(ep, HttpMethod.Get);
@@ -132,10 +148,10 @@ namespace Shippo
 
         #region Shipment
 
-        public async Task<Shipment> CreateShipment(IDictionary<string, object> parameters)
+        public async Task<Shipment> CreateShipment(CreateShipment createShipment)
         {
             string ep = string.Format("{0}/shipments", apiEndpoint);
-            return await this.apiClient.DoRequestAsync<Shipment>(ep, HttpMethod.Post, Serialize(parameters));
+            return await this.apiClient.DoRequestAsync<Shipment>(ep, HttpMethod.Post, Serialize(createShipment));
         }
 
         public async Task<Shipment> RetrieveShipment(string id)
@@ -144,7 +160,7 @@ namespace Shippo
             return await this.apiClient.DoRequestAsync<Shipment>(ep, HttpMethod.Get);
         }
 
-        public async Task<ShippoCollection<Shipment>> AllShipments(IDictionary<string, object> parameters)
+        public async Task<ShippoCollection<Shipment>> AllShipments(IDictionary<string, string> parameters)
         {
             string ep = string.Format("{0}/shipments?{1}", apiEndpoint, GenerateURLEncodedFromHashmap(parameters));
             return await this.apiClient.DoRequestAsync<ShippoCollection<Shipment>>(ep, HttpMethod.Get);

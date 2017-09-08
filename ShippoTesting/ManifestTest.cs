@@ -1,4 +1,4 @@
-﻿﻿using NUnit.Framework;
+﻿using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,7 +15,7 @@ namespace ShippoTesting
         [Test]
         public void TestInvalidCreate()
         {
-			Assert.That(() => ManifestTest.getDefaultObject(), Throws.TypeOf<ShippoException>());
+            Assert.That(() => ManifestTest.getDefaultObject(), Throws.TypeOf<ShippoException>());
         }
 
         [Test]
@@ -24,7 +24,7 @@ namespace ShippoTesting
             Manifest testObject = ManifestTest.getDefaultObject();
             Manifest retrievedObject;
 
-            retrievedObject = apiResource.RetrieveManifest((string) testObject.ObjectId).Result;
+            retrievedObject = apiResource.RetrieveManifest((string)testObject.ObjectId).Result;
             Assert.AreEqual(testObject.ObjectId, retrievedObject.ObjectId);
         }
 
@@ -41,20 +41,20 @@ namespace ShippoTesting
 
         public static Manifest getDefaultObject()
         {
-            var parameters0 = new Dictionary<string, object>();
+            var parameters0 = new CreateShipment();
             Address addressFrom = AddressTest.GetDefaultObject();
             Address addressTo = AddressTest.GetDefaultObject_2();
-            Parcel parcel = ParcelTest.getDefaultObject();
-            parameters0.Add("address_from", addressFrom.ObjectId);
-            parameters0.Add("address_to", addressTo.ObjectId);
-            parameters0.Add("parcels", new String[]{ parcel.ObjectId});
-            parameters0.Add("shipment_date", now);
-            parameters0.Add("insurance_amount", "30");
-            parameters0.Add("insurance_currency", "USD");
-            parameters0.Add("extra", "{signature_confirmation: true}");
-            parameters0.Add("customs_declaration", "");
-            parameters0.Add("metadata", "Customer ID 123456");
-            parameters0.Add("async", false);
+            Parcel parcel = ParcelTest.GetDefaultObject();
+            parameters0.AddressFrom = addressFrom.ObjectId;
+            parameters0.AddressTo = addressTo.ObjectId;
+//FIXME            parameters0.Add("parcels", new string[] { parcel.ObjectId });
+            parameters0.ShipmentDate = DateTime.Now;
+            //FIXME            parameters0.Add("insurance_amount", "30");
+            //FIXME             parameters0.Add("insurance_currency", "USD");
+            //FIXME             parameters0.Add("extra", "{signature_confirmation: true}");
+            //FIXME             parameters0.Add("customs_declaration", "");
+            parameters0.Metadata = "Customer ID 123456";
+            parameters0.Async = false;
 
             Shipment shipment = GetAPIResource().CreateShipment(parameters0).Result;
             var parameters1 = new Dictionary<string, object>();
@@ -65,7 +65,7 @@ namespace ShippoTesting
             List<Rate> rateList = rateCollection.Data;
             Rate[] rateArray = rateList.ToArray();
 
-            parameters1.Add("rate", rateArray [0].ObjectId);
+            parameters1.Add("rate", rateArray[0].ObjectId);
             parameters1.Add("metadata", "Customer ID 123456");
 
             Transaction transaction = GetAPIResource().CreateTransactionSync(parameters1).Result;

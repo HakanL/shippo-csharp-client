@@ -13,14 +13,14 @@ namespace ShippoTesting {
         [Test]
         public void TestValidCreate()
         {
-            Shipment testObject = ShipmentTest.getDefaultObject();
+            Shipment testObject = ShipmentTest.GetDefaultObject();
             Assert.AreEqual("SUCCESS", testObject.Status);
         }
 
         [Test]
-        public void testValidRetrieve()
+        public void TestValidRetrieve()
         {
-            Shipment testObject = ShipmentTest.getDefaultObject();
+            Shipment testObject = ShipmentTest.GetDefaultObject();
             Shipment retrievedObject;
 
             retrievedObject = apiResource.RetrieveShipment((string) testObject.ObjectId).Result;
@@ -28,9 +28,9 @@ namespace ShippoTesting {
         }
 
         [Test]
-        public void testListAll()
+        public void TestListAll()
         {
-            var parameters = new Dictionary<string, object>();
+            var parameters = new Dictionary<string, string>();
             parameters.Add("results", "1");
             parameters.Add("page", "1");
 
@@ -38,25 +38,27 @@ namespace ShippoTesting {
             Assert.AreNotEqual(0, parcels.Data.Count);
         }
 
-        public static Shipment getDefaultObject()
+        public static Shipment GetDefaultObject()
         {
-            var parameters = new Dictionary<string, object>();
             Address addressFrom = AddressTest.GetDefaultObject();
             Address addressTo = AddressTest.GetDefaultObject_2();
-            Parcel parcel = ParcelTest.getDefaultObject();
-            parameters.Add("address_from", addressFrom.ObjectId);
-            parameters.Add("address_to", addressTo.ObjectId);
-            parameters.Add("parcels", new String[]{ parcel.ObjectId});
-            parameters.Add("shipment_date", now);
-            parameters.Add("insurance_amount", "30");
-            parameters.Add("insurance_currency", "USD");
-            parameters.Add("extra", "{signature_confirmation: true}");
-            parameters.Add("customs_declaration", "");
-            parameters.Add("metadata", "Customer ID 123456");
-            parameters.Add("async", false);
+            Parcel parcel = ParcelTest.GetDefaultObject();
+
+            var parameters = new CreateShipment
+            {
+                AddressFrom = addressFrom.ObjectId,
+                AddressTo = addressTo.ObjectId,
+                Async = false,
+                Metadata = "Customer ID 123456",
+                ShipmentDate = DateTime.Now
+            };
+            //FIXME     parameters.Add("parcels", new String[]{ parcel.ObjectId});
+            //FIXME     parameters.Add("insurance_amount", "30");
+            //FIXME     parameters.Add("insurance_currency", "USD");
+            //FIXME     parameters.Add("extra", "{signature_confirmation: true}");
+            //FIXME     parameters.Add("customs_declaration", "");
 
             return GetAPIResource().CreateShipment(parameters).Result;
         }
     }
 }
-

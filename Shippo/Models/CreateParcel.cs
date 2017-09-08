@@ -4,20 +4,8 @@ using Newtonsoft.Json;
 namespace Shippo.Models
 {
     [JsonObject(MemberSerialization.OptIn)]
-    public class Parcel : ShippoId
+    public class CreateParcel
     {
-        [JsonProperty(PropertyName = "object_state")]
-        public string ObjectState { get; set; }
-
-        [JsonProperty(PropertyName = "object_created")]
-        public DateTime ObjectCreated { get; set; }
-
-        [JsonProperty(PropertyName = "object_updated")]
-        public DateTime ObjectUpdated { get; set; }
-
-        [JsonProperty(PropertyName = "object_owner")]
-        public string ObjectOwner { get; set; }
-
         [JsonProperty(PropertyName = "length")]
         public decimal Length { get; set; }
 
@@ -45,7 +33,23 @@ namespace Shippo.Models
         [JsonProperty(PropertyName = "extra")]
         public string Extra;
 
-        [JsonProperty(PropertyName = "test")]
-        public bool? Test;
+        public static CreateParcel CreateForShipment(
+            decimal length,
+            decimal width,
+            decimal height,
+            DistanceUnits distance_unit,
+            decimal weight,
+            MassUnits massUnit)
+        {
+            return new CreateParcel
+            {
+                Length = length,
+                Width = width,
+                Height = height,
+                DistanceUnit = distance_unit,
+                Weight = weight,
+                MassUnit = massUnit
+            };
+        }
     }
 }

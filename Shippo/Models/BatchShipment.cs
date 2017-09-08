@@ -28,13 +28,14 @@ namespace Shippo.Models
         [JsonProperty(PropertyName = "metadata")]
         public string Metadata;
 
-        public static BatchShipment createForBatchShipments(String carrierAccount, string servicelevelToken, Shipment shipment)
+        public static BatchShipment CreateForBatchShipments(String carrierAccount, string servicelevelToken, CreateShipment shipment)
         {
-            BatchShipment bs = new BatchShipment();
-            bs.CarrierAccount = carrierAccount;
-            bs.ServicelevelToken = servicelevelToken;
-            bs.Shipment = shipment;
-            return bs;
+            return new BatchShipment
+            {
+                CarrierAccount = carrierAccount,
+                ServicelevelToken = servicelevelToken,
+                Shipment = shipment
+            };
         }
 
         public override string ToString()
