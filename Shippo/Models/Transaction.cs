@@ -7,7 +7,7 @@ namespace Shippo.Models
     public class Transaction : ShippoId
     {
         [JsonProperty(PropertyName = "object_state")]
-        public object ObjectState { get; set; }
+        public ShippoEnums.ObjectStates ObjectState { get; set; }
 
         [JsonProperty(PropertyName = "status")]
         public object Status { get; set; }

@@ -73,11 +73,15 @@ namespace Shippo
         private string GenerateURLEncodedFromHashmap(IDictionary<string, string> propertyMap)
         {
             var str = new StringBuilder();
-            foreach (var pair in propertyMap)
+
+            if (propertyMap != null)
             {
-                str.AppendFormat("{0}={1}&", pair.Key, pair.Value);
+                foreach (var pair in propertyMap)
+                {
+                    str.AppendFormat("{0}={1}&", pair.Key, pair.Value);
+                }
+                str.Length--;
             }
-            str.Length--;
 
             return str.ToString();
         }
@@ -116,7 +120,7 @@ namespace Shippo
             return await this.apiClient.DoRequestAsync<Address>(ep, HttpMethod.Get);
         }
 
-        public async Task<ShippoCollection<Address>> AllAddresses(IDictionary<string, string> parameters)
+        public async Task<ShippoCollection<Address>> AllAddresses(IDictionary<string, string> parameters = null)
         {
             string ep = string.Format("{0}/addresses?{1}", apiEndpoint, GenerateURLEncodedFromHashmap(parameters));
             return await this.apiClient.DoRequestAsync<ShippoCollection<Address>>(ep, HttpMethod.Get);
@@ -138,7 +142,7 @@ namespace Shippo
             return await this.apiClient.DoRequestAsync<Parcel>(ep, HttpMethod.Get);
         }
 
-        public async Task<ShippoCollection<Parcel>> AllParcels(IDictionary<string, string> parameters)
+        public async Task<ShippoCollection<Parcel>> AllParcels(IDictionary<string, string> parameters = null)
         {
             string ep = string.Format("{0}/parcels?{1}", apiEndpoint, GenerateURLEncodedFromHashmap(parameters));
             return await this.apiClient.DoRequestAsync<ShippoCollection<Parcel>>(ep, HttpMethod.Get);
@@ -160,7 +164,7 @@ namespace Shippo
             return await this.apiClient.DoRequestAsync<Shipment>(ep, HttpMethod.Get);
         }
 
-        public async Task<ShippoCollection<Shipment>> AllShipments(IDictionary<string, string> parameters)
+        public async Task<ShippoCollection<Shipment>> AllShipments(IDictionary<string, string> parameters = null)
         {
             string ep = string.Format("{0}/shipments?{1}", apiEndpoint, GenerateURLEncodedFromHashmap(parameters));
             return await this.apiClient.DoRequestAsync<ShippoCollection<Shipment>>(ep, HttpMethod.Get);
@@ -189,10 +193,10 @@ namespace Shippo
 
             string object_id = (string)parameters["id"];
             Shipment shipment = await RetrieveShipment(object_id);
-            string object_status = (string)shipment.Status;
+            ShippoEnums.ShippingStatuses object_status = shipment.Status;
             long startTime = DateTimeExtensions.UnixTimeNow();
 
-            while (object_status.Equals("QUEUED", StringComparison.OrdinalIgnoreCase) || object_status.Equals("WAITING", StringComparison.OrdinalIgnoreCase))
+            while (object_status == ShippoEnums.ShippingStatuses.QUEUED || object_status == ShippoEnums.ShippingStatuses.WAITING)
             {
                 if (DateTimeExtensions.UnixTimeNow() - startTime > RatesReqTimeout)
                 {
@@ -200,7 +204,7 @@ namespace Shippo
                         "A timeout has occured while waiting for your rates to generate. Try retrieving the Shipment object again and check if object_status is updated. If this issue persists, please contact support@goshippo.com");
                 }
                 shipment = await RetrieveShipment(object_id);
-                object_status = (string)shipment.Status;
+                object_status = shipment.Status;
             }
 
             return await CreateRate(parameters);
@@ -272,7 +276,7 @@ namespace Shippo
             return await this.apiClient.DoRequestAsync<CustomsItem>(ep, HttpMethod.Get);
         }
 
-        public async Task<ShippoCollection<CustomsItem>> AllCustomsItems(IDictionary<string, object> parameters)
+        public async Task<ShippoCollection<CustomsItem>> AllCustomsItems(IDictionary<string, string> parameters = null)
         {
             string ep = string.Format("{0}/customs/items?{1}", apiEndpoint, GenerateURLEncodedFromHashmap(parameters));
             return await this.apiClient.DoRequestAsync<ShippoCollection<CustomsItem>>(ep, HttpMethod.Get);
@@ -282,10 +286,10 @@ namespace Shippo
 
         #region CustomsDeclaration
 
-        public async Task<CustomsDeclaration> CreateCustomsDeclaration(IDictionary<string, object> parameters)
+        public async Task<CustomsDeclaration> CreateCustomsDeclaration(CreateCustomsDeclaration createCustomsDeclaration)
         {
             string ep = string.Format("{0}/customs/declarations", apiEndpoint);
-            return await this.apiClient.DoRequestAsync<CustomsDeclaration>(ep, HttpMethod.Post, Serialize(parameters));
+            return await this.apiClient.DoRequestAsync<CustomsDeclaration>(ep, HttpMethod.Post, Serialize(createCustomsDeclaration));
         }
 
         public async Task<CustomsDeclaration> RetrieveCustomsDeclaration(string id)
@@ -294,7 +298,7 @@ namespace Shippo
             return await this.apiClient.DoRequestAsync<CustomsDeclaration>(ep, HttpMethod.Get);
         }
 
-        public async Task<ShippoCollection<CustomsDeclaration>> AllCustomsDeclarations(IDictionary<string, object> parameters)
+        public async Task<ShippoCollection<CustomsDeclaration>> AllCustomsDeclarations(IDictionary<string, string> parameters = null)
         {
             string ep = string.Format("{0}/customs/declarations?{1}", apiEndpoint, GenerateURLEncodedFromHashmap(parameters));
             return await this.apiClient.DoRequestAsync<ShippoCollection<CustomsDeclaration>>(ep, HttpMethod.Get);
@@ -304,16 +308,10 @@ namespace Shippo
 
         #region CarrierAccount
 
-        public async Task<CarrierAccount> CreateCarrierAccount(IDictionary<string, object> parameters)
+        public async Task<CarrierAccount> CreateCarrierAccount(CreateCarrierAccount createCarrierAccount)
         {
             string ep = string.Format("{0}/carrier_accounts", apiEndpoint);
-            return await this.apiClient.DoRequestAsync<CarrierAccount>(ep, HttpMethod.Post, Serialize(parameters));
-        }
-
-        public async Task<CarrierAccount> UpdateCarrierAccount(string object_id, IDictionary<string, object> parameters)
-        {
-            string ep = string.Format("{0}/carrier_accounts/{1}", apiEndpoint, object_id);
-            return await this.apiClient.DoRequestAsync<CarrierAccount>(ep, HttpMethod.Put, Serialize(parameters));
+            return await this.apiClient.DoRequestAsync<CarrierAccount>(ep, HttpMethod.Post, Serialize(createCarrierAccount));
         }
 
         public async Task<CarrierAccount> RetrieveCarrierAccount(string object_id)
@@ -322,14 +320,22 @@ namespace Shippo
             return await this.apiClient.DoRequestAsync<CarrierAccount>(ep, HttpMethod.Get);
         }
 
-        public Task<ShippoCollection<CarrierAccount>> AllCarrierAccount(IDictionary<string, object> parameters)
+        public async Task<CarrierAccount> UpdateCarrierAccount(string object_id, IDictionary<string, string> parameters = null, bool? active = null)
         {
-            return AllCarrierAccount();
+            string ep = string.Format("{0}/carrier_accounts/{1}", apiEndpoint, object_id);
+
+            var updateCarrierAccount = new UpdateCarrierAccount
+            {
+                Parameters = parameters,
+                Active = active
+            };
+
+            return await this.apiClient.DoRequestAsync<CarrierAccount>(ep, HttpMethod.Put, Serialize(parameters));
         }
 
-        public async Task<ShippoCollection<CarrierAccount>> AllCarrierAccount()
+        public async Task<ShippoCollection<CarrierAccount>> AllCarrierAccounts(IDictionary<string, string> parameters = null)
         {
-            string ep = string.Format("{0}/carrier_accounts", apiEndpoint);
+            string ep = string.Format("{0}/carrier_accounts?{1}", apiEndpoint, GenerateURLEncodedFromHashmap(parameters));
             return await this.apiClient.DoRequestAsync<ShippoCollection<CarrierAccount>>(ep, HttpMethod.Get);
         }
 
@@ -349,7 +355,7 @@ namespace Shippo
             return await this.apiClient.DoRequestAsync<Refund>(ep, HttpMethod.Get);
         }
 
-        public async Task<ShippoCollection<Refund>> AllRefunds(IDictionary<string, object> parameters)
+        public async Task<ShippoCollection<Refund>> AllRefunds(IDictionary<string, string> parameters)
         {
             string ep = string.Format("{0}/refunds?{1}", apiEndpoint, GenerateURLEncodedFromHashmap(parameters));
             return await this.apiClient.DoRequestAsync<ShippoCollection<Refund>>(ep, HttpMethod.Get);
@@ -371,7 +377,7 @@ namespace Shippo
             return await this.apiClient.DoRequestAsync<Manifest>(ep, HttpMethod.Get);
         }
 
-        public async Task<ShippoCollection<Manifest>> AllManifests(IDictionary<string, object> parameters)
+        public async Task<ShippoCollection<Manifest>> AllManifests(IDictionary<string, string> parameters)
         {
             string ep = string.Format("{0}/manifests?{1}", apiEndpoint, GenerateURLEncodedFromHashmap(parameters));
             return await this.apiClient.DoRequestAsync<ShippoCollection<Manifest>>(ep, HttpMethod.Get);
@@ -438,19 +444,27 @@ namespace Shippo
 
         #region Track
 
-        public async Task<Track> RetrieveTracking(string carrier, string id)
+        public async Task<Track> RetrieveTracking(string carrier, string trackingNumber)
         {
             string encodedCarrier = System.Net.WebUtility.HtmlEncode(carrier);
-            string encodedId = System.Net.WebUtility.HtmlEncode(id);
-            string ep = string.Format("{0}/tracks/{1}/{2}", apiEndpoint, encodedCarrier, encodedId);
+            string encodedTrk = System.Net.WebUtility.HtmlEncode(trackingNumber);
+            string ep = string.Format("{0}/tracks/{1}/{2}", apiEndpoint, encodedCarrier, encodedTrk);
             return await this.apiClient.DoRequestAsync<Track>(ep, HttpMethod.Get);
         }
 
-        public async Task<Track> RegisterTrackingWebhook(IDictionary<string, object> parameters)
+        public async Task<Track> RegisterTrackingWebhook(string carrier, string trackingNumber, string metadata = null)
         {
             // For now the trailing '/' is required.
             string ep = string.Format("{0}/tracks/", apiEndpoint);
-            return await this.apiClient.DoRequestAsync<Track>(ep, HttpMethod.Post, Serialize(parameters));
+
+            var createTrack = new CreateTrack
+            {
+                Carrier = carrier,
+                TrackingNumber = trackingNumber,
+                Metadata = metadata
+            };
+
+            return await this.apiClient.DoRequestAsync<Track>(ep, HttpMethod.Post, Serialize(createTrack));
         }
 
         #endregion

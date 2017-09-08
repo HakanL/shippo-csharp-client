@@ -7,7 +7,7 @@ namespace Shippo.Models
     public class Parcel : ShippoId
     {
         [JsonProperty(PropertyName = "object_state")]
-        public string ObjectState { get; set; }
+        public ShippoEnums.ObjectStates ObjectState { get; set; }
 
         [JsonProperty(PropertyName = "object_created")]
         public DateTime ObjectCreated { get; set; }
@@ -43,7 +43,7 @@ namespace Shippo.Models
         public string Metadata { get; set; }
 
         [JsonProperty(PropertyName = "extra")]
-        public string Extra;
+        public object Extra;
 
         [JsonProperty(PropertyName = "test")]
         public bool? Test;

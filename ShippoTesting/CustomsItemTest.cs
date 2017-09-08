@@ -6,39 +6,40 @@ using Shippo;
 using System.Collections.Generic;
 using Shippo.Models;
 
-namespace ShippoTesting {
+namespace ShippoTesting
+{
     [TestFixture]
-    public class CustomsItemTest : ShippoTest {
-
+    public class CustomsItemTest : ShippoTest
+    {
         [Test]
         public void TestValidCreate()
         {
-            CustomsItem testObject = CustomsItemTest.getDefaultObject();
-            Assert.AreEqual("VALID", testObject.ObjectState);
+            CustomsItem testObject = CustomsItemTest.GetDefaultObject();
+            Assert.AreEqual(ShippoEnums.ObjectStates.VALID, testObject.ObjectState);
         }
 
         [Test]
-        public void testValidRetrieve()
+        public void TestValidRetrieve()
         {
-            CustomsItem testObject = CustomsItemTest.getDefaultObject();
+            CustomsItem testObject = CustomsItemTest.GetDefaultObject();
             CustomsItem retrievedObject;
 
-            retrievedObject = apiResource.RetrieveCustomsItem((string) testObject.ObjectId).Result;
+            retrievedObject = shippoClient.RetrieveCustomsItem((string)testObject.ObjectId).Result;
             Assert.AreEqual(testObject.ObjectId, retrievedObject.ObjectId);
         }
 
         [Test]
-        public void testListAll()
+        public void TestListAll()
         {
-            var parameters = new Dictionary<string, object>();
+            var parameters = new Dictionary<string, string>();
             parameters.Add("results", "1");
             parameters.Add("page", "1");
 
-            var parcels = apiResource.AllCustomsItems(parameters).Result;
+            var parcels = shippoClient.AllCustomsItems(parameters).Result;
             Assert.AreNotEqual(0, parcels.Data.Count);
         }
 
-        public static CustomsItem getDefaultObject()
+        public static CustomsItem GetDefaultObject()
         {
             var parameters = new Dictionary<string, object>();
             parameters.Add("description", "T-Shirt");
@@ -51,7 +52,7 @@ namespace ShippoTesting {
             parameters.Add("origin_country", "US");
             parameters.Add("metadata", "Order ID #123123");
 
-            return GetAPIResource().CreateCustomsItem(parameters).Result;
+            return GetShippoClient().CreateCustomsItem(parameters).Result;
         }
     }
 }

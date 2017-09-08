@@ -16,7 +16,7 @@ namespace Shippo.Models
         public object ObjectOwner { get; set; }
 
         [JsonProperty(PropertyName = "object_state")]
-        public object ObjectState { get; set; }
+        public ShippoEnums.ObjectStates ObjectState { get; set; }
 
         [JsonProperty(PropertyName = "description")]
         public object Description { get; set; }

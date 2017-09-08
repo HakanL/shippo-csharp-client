@@ -21,9 +21,14 @@ namespace Shippo
             this.accessToken = accessToken;
             this.apiVersion = null;
 
+            CreateNewHttpClient();
+        }
+
+        private void CreateNewHttpClient(int timeoutSeconds = 25)
+        {
             this.httpClient = new HttpClient();
             this.httpClient.DefaultRequestHeaders.Add("User-Agent", userAgent);
-            this.httpClient.Timeout = TimeSpan.FromSeconds(25);
+            this.httpClient.Timeout = TimeSpan.FromSeconds(timeoutSeconds);
         }
 
         public string ApiVersion
@@ -35,7 +40,10 @@ namespace Shippo
         public int TimeoutSeconds
         {
             get { return (int)this.httpClient.Timeout.TotalSeconds; }
-            set { this.httpClient.Timeout = TimeSpan.FromSeconds(value); }
+            set
+            {
+                CreateNewHttpClient(value);
+            }
         }
 
         public void Dispose()
@@ -53,8 +61,6 @@ namespace Shippo
             {
                 req.Headers.Add("Shippo-API-Version", apiVersion);
             }
-
-            this.httpClient.Timeout = TimeSpan.FromSeconds(TimeoutSeconds);
 
             return req;
         }

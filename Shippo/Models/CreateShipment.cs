@@ -7,11 +7,68 @@ namespace Shippo.Models
     [JsonObject(MemberSerialization.OptIn)]
     public class CreateShipment
     {
+        private CreateAddress addressFromObject;
+        private CreateAddress addressToObject;
+        private CreateAddress addressReturnObject;
+        private CustomsDeclaration customsDeclarationObject;
+        private string addressFromObjectId;
+        private string addressToObjectId;
+        private string addressReturnObjectId;
+        private string customsDeclarationObjectId;
+
         [JsonProperty(PropertyName = "address_from")]
-        public object AddressFrom { get; set; }
+        public object AddressFrom
+        {
+            get
+            {
+                if (this.addressFromObject != null)
+                    return this.addressFromObject;
+                else
+                    return this.addressFromObjectId;
+            }
+            set
+            {
+                if (value is CreateAddress)
+                {
+                    this.addressFromObject = (CreateAddress)value;
+                    this.addressFromObjectId = null;
+                }
+                else if (value is string)
+                {
+                    this.addressFromObject = null;
+                    this.addressFromObjectId = (string)value;
+                }
+                else
+                    throw new ArgumentException();
+            }
+        }
 
         [JsonProperty(PropertyName = "address_to")]
-        public object AddressTo { get; set; }
+        public object AddressTo
+        {
+            get
+            {
+                if (this.addressToObject != null)
+                    return this.addressToObject;
+                else
+                    return this.addressToObjectId;
+            }
+            set
+            {
+                if (value is CreateAddress)
+                {
+                    this.addressToObject = (CreateAddress)value;
+                    this.addressToObjectId = null;
+                }
+                else if (value is string)
+                {
+                    this.addressToObject = null;
+                    this.addressToObjectId = (string)value;
+                }
+                else
+                    throw new ArgumentException();
+            }
+        }
 
         [JsonProperty(PropertyName = "parcels")]
         public object[] Parcels { get; set; }
@@ -20,10 +77,58 @@ namespace Shippo.Models
         public DateTime? ShipmentDate { get; set; }
 
         [JsonProperty(PropertyName = "address_return")]
-        public object AddressReturn { get; set; }
+        public object AddressReturn
+        {
+            get
+            {
+                if (this.addressReturnObject != null)
+                    return this.addressReturnObject;
+                else
+                    return this.addressReturnObjectId;
+            }
+            set
+            {
+                if (value is CreateAddress)
+                {
+                    this.addressReturnObject = (CreateAddress)value;
+                    this.addressReturnObjectId = null;
+                }
+                else if (value is string)
+                {
+                    this.addressReturnObject = null;
+                    this.addressReturnObjectId = (string)value;
+                }
+                else
+                    throw new ArgumentException();
+            }
+        }
 
         [JsonProperty(PropertyName = "customs_declaration")]
-        public object CustomsDeclaration { get; set; }
+        public object CustomsDeclaration
+        {
+            get
+            {
+                if (this.customsDeclarationObject != null)
+                    return this.customsDeclarationObject;
+                else
+                    return this.customsDeclarationObjectId;
+            }
+            set
+            {
+                if (value is CustomsDeclaration)
+                {
+                    this.customsDeclarationObject = (CustomsDeclaration)value;
+                    this.customsDeclarationObjectId = null;
+                }
+                else if (value is string)
+                {
+                    this.customsDeclarationObject = null;
+                    this.customsDeclarationObjectId = (string)value;
+                }
+                else
+                    throw new ArgumentException();
+            }
+        }
 
         [JsonProperty(PropertyName = "metadata")]
         public string Metadata { get; set; }

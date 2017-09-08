@@ -13,7 +13,7 @@ namespace Shippo.Models
         public string State;
 
         [JsonProperty(PropertyName = "Zip")]
-        public string Zip;
+        public string PostalCode;
 
         [JsonProperty(PropertyName = "Country")]
         public string Country;

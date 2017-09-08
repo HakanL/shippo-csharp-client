@@ -7,18 +7,19 @@ using Shippo;
 using System.Collections.Generic;
 using Shippo.Models;
 
-namespace ShippoTesting {
+namespace ShippoTesting
+{
     [TestFixture]
-    public class RateTest : ShippoTest {
-
+    public class RateTest : ShippoTest
+    {
         [Test]
         public void TestValidCreate()
         {
-            ShippoCollection<Rate> testObject = RateTest.getDefaultObject();
+            ShippoCollection<Rate> testObject = RateTest.GetDefaultObject();
             Assert.IsNotNull(testObject.Data);
         }
 
-        public static ShippoCollection<Rate> getDefaultObject()
+        public static ShippoCollection<Rate> GetDefaultObject()
         {
             Shipment testObject = ShipmentTest.GetDefaultObject();
             var parameters = new Dictionary<string, object>();
@@ -26,8 +27,7 @@ namespace ShippoTesting {
             parameters.Add("currency_code", "USD");
 
             // Use Synchronized rates method
-            return GetAPIResource().GetShippingRatesSync(parameters).Result;
+            return GetShippoClient().GetShippingRatesSync(parameters).Result;
         }
     }
 }
-

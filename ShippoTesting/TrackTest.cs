@@ -17,7 +17,7 @@ namespace ShippoTesting
         [Test]
         public void TestValidGetStatus()
         {
-            Track track = GetAPIResource().RetrieveTracking(CARRIER, TRACKING_NO).Result;
+            Track track = GetShippoClient().RetrieveTracking(CARRIER, TRACKING_NO).Result;
             Assert.AreEqual(TRACKING_NO, track.TrackingNumber);
             Assert.IsNotNull(track.TrackingStatus);
             Assert.IsNotNull(track.TrackingHistory);
@@ -26,19 +26,17 @@ namespace ShippoTesting
         [Test]
         public void TestInvalidGetStatus()
         {
-            Assert.That(() => GetAPIResource().RetrieveTracking(CARRIER, "INVALID_ID"),
+            Assert.That(() => GetShippoClient().RetrieveTracking(CARRIER, "INVALID_ID"),
                         Throws.TypeOf<ShippoException>());
         }
 
         [Test]
         public void TestValidRegisterWebhook()
         {
-            Track track = GetAPIResource().RetrieveTracking(CARRIER, TRACKING_NO).Result;
+            Track track = GetShippoClient().RetrieveTracking(CARRIER, TRACKING_NO).Result;
 
-            var parameters = new Dictionary<string, object>();
-            parameters.Add("carrier", CARRIER);
-            parameters.Add("tracking_number", track.TrackingNumber);
-            Track register = GetAPIResource().RegisterTrackingWebhook(parameters).Result;
+            Track register = GetShippoClient().RegisterTrackingWebhook(CARRIER, track.TrackingNumber).Result;
+
             Assert.IsNotNull(register.TrackingNumber);
             Assert.IsNotNull(register.TrackingHistory);
         }
@@ -46,10 +44,7 @@ namespace ShippoTesting
         [Test]
         public void TestInvalidRegisterWebhook()
         {
-            var parameters = new Dictionary<string, object>();
-            parameters.Add("carrier", CARRIER);
-            parameters.Add("tracking_number", "INVALID_ID");
-            Assert.That(() => GetAPIResource().RegisterTrackingWebhook(parameters),
+            Assert.That(() => GetShippoClient().RegisterTrackingWebhook(CARRIER, "INVALID_ID"),
                         Throws.TypeOf<ShippoException>());
         }
     }

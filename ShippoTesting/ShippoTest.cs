@@ -10,20 +10,18 @@ namespace ShippoTesting
     [TestFixture]
     public class ShippoTest
     {
-        static internal ShippoClient apiResource;
-        static internal String now;
+        static internal ShippoClient shippoClient;
         public ShippoClient staticAPIResource;
 
         [SetUp]
         public void Init()
         {
-            apiResource = new ShippoClient("<Shippo Token>");
-            now = DateTime.Now.ToString("yyyy-MM-dd HH':'mm':'ss");
+            shippoClient = new ShippoClient("<YourShippoToken>");
         }
 
-        public static ShippoClient GetAPIResource()
+        public static ShippoClient GetShippoClient()
         {
-            return apiResource;
+            return shippoClient;
         }
     }
 }

@@ -8,16 +8,16 @@ namespace Shippo.Models
     public class Shipment : ShippoId
     {
         [JsonProperty(PropertyName = "status")]
-        public object Status { get; set; }
+        public ShippoEnums.ShippingStatuses Status { get; set; }
 
         [JsonProperty(PropertyName = "object_created")]
-        public object ObjectCreated { get; set; }
+        public DateTime ObjectCreated { get; set; }
 
         [JsonProperty(PropertyName = "object_updated")]
-        public object ObjectUpdated { get; set; }
+        public DateTime ObjectUpdated { get; set; }
 
         [JsonProperty(PropertyName = "object_owner")]
-        public object ObjectOwner { get; set; }
+        public string ObjectOwner { get; set; }
 
         [JsonProperty(PropertyName = "address_from")]
         public object AddressFrom { get; set; }
@@ -29,7 +29,7 @@ namespace Shippo.Models
         public object[] Parcels { get; set; }
 
         [JsonProperty(PropertyName = "shipment_date")]
-        public object ShipmentDate { get; set; }
+        public DateTime ShipmentDate { get; set; }
 
         [JsonProperty(PropertyName = "address_return")]
         public object AddressReturn { get; set; }
@@ -41,7 +41,7 @@ namespace Shippo.Models
         public List<string> CarrierAccounts;
 
         [JsonProperty(PropertyName = "metadata")]
-        public object Metadata { get; set; }
+        public string Metadata { get; set; }
 
         [JsonProperty(PropertyName = "extra")]
         public object Extra { get; set; }
@@ -53,6 +53,6 @@ namespace Shippo.Models
         public object Messages { get; set; }
 
         [JsonProperty(PropertyName = "test")]
-        public bool? Test;
+        public bool Test;
     }
 }

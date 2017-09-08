@@ -25,8 +25,11 @@ namespace Shippo.Models
         [JsonProperty(PropertyName = "validate")]
         public bool? Validate;
 
-        [JsonProperty(PropertyName = "metadata")]
-        public string Metadata { get; set; }
+        [JsonProperty(PropertyName = "latitude")]
+        public double? Latitude;
+
+        [JsonProperty(PropertyName = "longitude")]
+        public double? Longitude;
 
         [JsonProperty(PropertyName = "test")]
         public bool Test;

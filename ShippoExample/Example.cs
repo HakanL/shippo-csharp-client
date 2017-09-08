@@ -27,7 +27,7 @@ namespace ShippoExample
 
         private static async Task RunBatchExample(ShippoClient resource)
         {
-            ShippoCollection<CarrierAccount> carrierAccounts = await resource.AllCarrierAccount();
+            ShippoCollection<CarrierAccount> carrierAccounts = await resource.AllCarrierAccounts();
             string defaultCarrierAccount = "";
             foreach (CarrierAccount account in carrierAccounts)
             {

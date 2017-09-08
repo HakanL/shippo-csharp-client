@@ -10,7 +10,6 @@ namespace ShippoTesting
     [TestFixture]
     public class AddressTest : ShippoTest
     {
-
         [Test]
         public void TestValidCreate()
         {
@@ -24,7 +23,7 @@ namespace ShippoTesting
             Address testObject = AddressTest.GetDefaultObject();
             Address retrievedObject;
 
-            retrievedObject = apiResource.RetrieveAddress((string)testObject.ObjectId).Result;
+            retrievedObject = shippoClient.RetrieveAddress((string)testObject.ObjectId).Result;
             Assert.AreEqual(testObject.ObjectId, retrievedObject.ObjectId);
         }
 
@@ -47,7 +46,7 @@ namespace ShippoTesting
                 Validate = true
             };
 
-            return GetAPIResource().CreateAddress(parameters).Result;
+            return GetShippoClient().CreateAddress(parameters).Result;
         }
 
         public static Address GetDefaultObject_2()
@@ -68,7 +67,7 @@ namespace ShippoTesting
                 Metadata = "Customer ID 123456"
             };
 
-            return GetAPIResource().CreateAddress(parameters).Result;
+            return GetShippoClient().CreateAddress(parameters).Result;
         }
     }
 }

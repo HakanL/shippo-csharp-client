@@ -8,66 +8,66 @@ using System.Collections.Generic;
 using Shippo;
 using Shippo.Models;
 
-namespace ShippoTesting {
+namespace ShippoTesting
+{
     [TestFixture]
-    public class CustomsDeclarationTest : ShippoTest {
+    public class CustomsDeclarationTest : ShippoTest
+    {
 
         [Test]
         public void TestValidCreate()
         {
-            CustomsDeclaration testObject = CustomsDeclarationTest.getDefaultObject();
-            Assert.AreEqual("VALID", testObject.ObjectState);
+            CustomsDeclaration testObject = CustomsDeclarationTest.GetDefaultObject();
+            Assert.AreEqual(ShippoEnums.ObjectStates.VALID, testObject.ObjectState);
         }
 
         [Test]
-        public void testValidRetrieve()
+        public void TestValidRetrieve()
         {
-            CustomsDeclaration testObject = CustomsDeclarationTest.getDefaultObject();
+            CustomsDeclaration testObject = CustomsDeclarationTest.GetDefaultObject();
             CustomsDeclaration retrievedObject;
 
-            retrievedObject = apiResource.RetrieveCustomsDeclaration((string) testObject.ObjectId).Result;
+            retrievedObject = shippoClient.RetrieveCustomsDeclaration((string)testObject.ObjectId).Result;
             Assert.AreEqual(testObject.ObjectId, retrievedObject.ObjectId);
         }
 
         [Test]
-        public void testListAll()
+        public void TestListAll()
         {
-            var parameters = new Dictionary<string, object>();
+            var parameters = new Dictionary<string, string>();
             parameters.Add("results", "1");
             parameters.Add("page", "1");
 
-            var parcels = apiResource.AllCustomsDeclarations(parameters).Result;
+            var parcels = shippoClient.AllCustomsDeclarations(parameters).Result;
             Assert.AreNotEqual(0, parcels.Data.Count);
         }
 
-        public static CustomsDeclaration getDefaultObject()
+        public static CustomsDeclaration GetDefaultObject()
         {
-            CustomsItem customsItem = CustomsItemTest.getDefaultObject();
-            var parameters = new Dictionary<string, object>();
-            parameters.Add("exporter_reference", "");
-            parameters.Add("importer_reference", "");
-            parameters.Add("contents_type", "MERCHANDISE");
-            parameters.Add("contents_explanation", "T-Shirt purchase");
-            parameters.Add("invoice", "#123123");
-            parameters.Add("license", "");
-            parameters.Add("certificate", "");
-            parameters.Add("notes", "");
-            parameters.Add("eel_pfc", "NOEEI_30_37_a");
-            parameters.Add("aes_itn", "");
-            parameters.Add("non_delivery_option", "ABANDON");
-            parameters.Add("certify", true);
-            parameters.Add("certify_signer", "Laura Behrens Wu");
-            parameters.Add("disclaimer", "");
-            parameters.Add("incoterm", "");
+            var parameters = new CreateCustomsDeclaration
+            {
+                ExporterReference = "",
+                ImporterReference = "",
+                ContentsType = ShippoEnums.ContentsTypes.MERCHANDISE,
+                ContentsExplanation = "T-Shirt purchase",
+                Invoice = "#123123",
+                License = "",
+                Certificate = "",
+                Notes = "",
+                EelPfc = ShippoEnums.EelPfcs.NOEEI_30_37_a,
+                AesItn = "",
+                NonDeliveryOption = ShippoEnums.NonDeliveryOptions.ABANDON,
+                Certify = true,
+                CertifySigner = "Laura Behrens Wu",
+                Disclaimer = "",
+                Incoterm = null,
+                Metadata = "Order ID #123123"
+            };
 
-            
-            JArray customsItems = new JArray();
-            customsItems.Add((string) customsItem.ObjectId);
-            
+            CustomsItem customsItem = CustomsItemTest.GetDefaultObject();
+            parameters.Items.Add(customsItem.ObjectId);
 
-            parameters.Add("items", customsItems);
-            parameters.Add("metadata", "Order ID #123123");
-            return GetAPIResource().CreateCustomsDeclaration(parameters).Result;
+            return GetShippoClient().CreateCustomsDeclaration(parameters).Result;
         }
     }
 }

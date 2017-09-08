@@ -15,7 +15,7 @@ namespace ShippoTesting {
         public void TestValidCreate()
         {
             Transaction testObject = TransactionTest.getDefaultObject();
-            Assert.AreEqual("VALID", testObject.ObjectState);
+            Assert.AreEqual(ShippoEnums.ObjectStates.VALID, testObject.ObjectState);
         }
 
         [Test]
@@ -35,7 +35,7 @@ namespace ShippoTesting {
             parameters.Add("results", "1");
             parameters.Add("page", "1");
 
-            var parcels = apiResource.AllTransactions(parameters).Result;
+            var parcels = shippoClient.AllTransactions(parameters).Result;
             Assert.AreNotEqual(0, parcels.Data.Count);
         }
 
@@ -43,14 +43,14 @@ namespace ShippoTesting {
         {
             var parameters = new Dictionary<string, object>();
 
-            ShippoCollection<Rate> rateCollection = RateTest.getDefaultObject();
+            ShippoCollection<Rate> rateCollection = RateTest.GetDefaultObject();
             List<Rate> rateList = rateCollection.Data;
             Rate[] rateArray = rateList.ToArray();
 
             parameters.Add("rate", rateArray [0].ObjectId);
             parameters.Add("metadata", "Customer ID 123456");
 
-            return GetAPIResource().CreateTransactionSync(parameters).Result;
+            return GetShippoClient().CreateTransactionSync(parameters).Result;
         }
     }
 }

@@ -20,8 +20,14 @@ namespace Shippo.Models
         [JsonProperty(PropertyName = "address_to")]
         public ShortAddress AddressTo;
 
+        [JsonProperty(PropertyName = "transaction")]
+        public string Transaction { get; set; }
+
         [JsonProperty(PropertyName = "eta")]
         public DateTime? Eta;
+
+        [JsonProperty(PropertyName = "original_eta")]
+        public DateTime? OriginalEta;
 
         [JsonProperty(PropertyName = "servicelevel")]
         public Servicelevel Servicelevel;

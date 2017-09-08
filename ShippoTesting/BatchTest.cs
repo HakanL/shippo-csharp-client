@@ -22,7 +22,7 @@ namespace ShippoTesting
         [Test]
         public void TestInvalidCreate()
         {
-            Assert.That(() => GetAPIResource().CreateBatch("invalid_carrier_account", "invalid_servicelevel_token", ShippoEnums.LabelFiletypes.NONE, "", new List<BatchShipment>()),
+            Assert.That(() => GetShippoClient().CreateBatch("invalid_carrier_account", "invalid_servicelevel_token", ShippoEnums.LabelFiletypes.NONE, "", new List<BatchShipment>()),
                         Throws.TypeOf<ShippoException>());
         }
 
@@ -30,7 +30,7 @@ namespace ShippoTesting
         public void TestValidRetrieve()
         {
             Batch batch = getDefaultObject();
-            Batch retrieve = GetAPIResource().RetrieveBatch(batch.ObjectId, 0, ShippoEnums.ObjectResults.none).Result;
+            Batch retrieve = GetShippoClient().RetrieveBatch(batch.ObjectId, 0, ShippoEnums.ObjectResults.none).Result;
             Assert.AreEqual(batch.ObjectId, retrieve.ObjectId);
             Assert.AreEqual(batch.ObjectCreated, retrieve.ObjectCreated);
         }
@@ -38,7 +38,7 @@ namespace ShippoTesting
         [Test]
         public void TestInvalidRetrieve()
         {
-            Assert.That(() => GetAPIResource().RetrieveBatch("INVALID_ID", 0, ShippoEnums.ObjectResults.none),
+            Assert.That(() => GetShippoClient().RetrieveBatch("INVALID_ID", 0, ShippoEnums.ObjectResults.none),
                         Throws.TypeOf<ShippoException>());
         }
 
@@ -53,7 +53,7 @@ namespace ShippoTesting
             shipmentIds.Add(shipment.ObjectId);
 
             Batch retrieve = getValidBatch(batch.ObjectId);
-            Batch newBatch = GetAPIResource().AddShipmentsToBatch(retrieve.ObjectId, shipmentIds).Result;
+            Batch newBatch = GetShippoClient().AddShipmentsToBatch(retrieve.ObjectId, shipmentIds).Result;
 
             Assert.AreEqual(retrieve.BatchShipments.Count + shipmentIds.Count, newBatch.BatchShipments.Count);
         }
@@ -63,7 +63,7 @@ namespace ShippoTesting
         {
             List<String> shipmentIds = new List<String>();
             shipmentIds.Add("123");
-            Assert.That(() => GetAPIResource().AddShipmentsToBatch("INVALID_ID", shipmentIds),
+            Assert.That(() => GetShippoClient().AddShipmentsToBatch("INVALID_ID", shipmentIds),
                          Throws.TypeOf<ShippoException>());
         }
 
@@ -78,13 +78,13 @@ namespace ShippoTesting
             shipmentIds.Add(shipment.ObjectId);
 
             Batch retrieve = getValidBatch(batch.ObjectId);
-            Batch addBatch = GetAPIResource().AddShipmentsToBatch(retrieve.ObjectId, shipmentIds).Result;
+            Batch addBatch = GetShippoClient().AddShipmentsToBatch(retrieve.ObjectId, shipmentIds).Result;
 
             string removeId = addBatch.BatchShipments.Results[0].ObjectId;
             List<String> shipmentsToRemove = new List<String>();
             shipmentsToRemove.Add(removeId);
 
-            Batch removeBatch = GetAPIResource().RemoveShipmentsFromBatch(batch.ObjectId, shipmentsToRemove).Result;
+            Batch removeBatch = GetShippoClient().RemoveShipmentsFromBatch(batch.ObjectId, shipmentsToRemove).Result;
             Assert.AreEqual(retrieve.BatchShipments.Count, removeBatch.BatchShipments.Count);
         }
 
@@ -93,7 +93,7 @@ namespace ShippoTesting
         {
             List<String> shipments = new List<String>();
             shipments.Add("123");
-            Assert.That(() => GetAPIResource().RemoveShipmentsFromBatch("INVALID_ID", shipments),
+            Assert.That(() => GetShippoClient().RemoveShipmentsFromBatch("INVALID_ID", shipments),
                         Throws.TypeOf<ShippoException>());
         }
 
@@ -102,14 +102,14 @@ namespace ShippoTesting
         {
             Batch batch = getDefaultObject();
             Batch retrieve = getValidBatch(batch.ObjectId);
-            Batch purchase = GetAPIResource().PurchaseBatch(retrieve.ObjectId).Result;
+            Batch purchase = GetShippoClient().PurchaseBatch(retrieve.ObjectId).Result;
             Assert.AreEqual(ShippoEnums.Statuses.PURCHASING, purchase.Status);
         }
 
         [Test]
         public void TestInvalidPurchase()
         {
-            Assert.That(() => GetAPIResource().PurchaseBatch("INVALID_ID"),
+            Assert.That(() => GetShippoClient().PurchaseBatch("INVALID_ID"),
                         Throws.TypeOf<ShippoException>());
         }
 
@@ -123,7 +123,7 @@ namespace ShippoTesting
             int retries = 10;
             for (; retries > 0; retries--)
             {
-                batch = GetAPIResource().RetrieveBatch(id, 0, ShippoEnums.ObjectResults.none).Result;
+                batch = GetShippoClient().RetrieveBatch(id, 0, ShippoEnums.ObjectResults.none).Result;
                 if (batch.Status == ShippoEnums.Statuses.VALID)
                     return batch;
                 System.Threading.Thread.Sleep(1000);
@@ -136,7 +136,7 @@ namespace ShippoTesting
             // Grab USPS carrier account to get the correct object ID for further testing.
             // This should be changed to be more generic in future versions of this test. In
             // other words, remove the depedence on a USPS carrier account to exist.
-            ShippoCollection<CarrierAccount> carrierAccounts = GetAPIResource().AllCarrierAccount().Result;
+            ShippoCollection<CarrierAccount> carrierAccounts = GetShippoClient().AllCarrierAccounts().Result;
             string defaultCarrierAccount = "";
             foreach (CarrierAccount account in carrierAccounts)
             {
@@ -155,7 +155,7 @@ namespace ShippoTesting
             var batchShipments = new List<BatchShipment>();
             batchShipments.Add(batchShipment);
 
-            Batch batch = GetAPIResource().CreateBatch(
+            Batch batch = GetShippoClient().CreateBatch(
                 defaultCarrierAccount,
                 "usps_priority",
                 ShippoEnums.LabelFiletypes.PDF_4x6,

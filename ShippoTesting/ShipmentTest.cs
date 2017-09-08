@@ -6,9 +6,11 @@ using Shippo;
 using System.Collections.Generic;
 using Shippo.Models;
 
-namespace ShippoTesting {
+namespace ShippoTesting
+{
     [TestFixture]
-    public class ShipmentTest : ShippoTest {
+    public class ShipmentTest : ShippoTest
+    {
 
         [Test]
         public void TestValidCreate()
@@ -23,7 +25,7 @@ namespace ShippoTesting {
             Shipment testObject = ShipmentTest.GetDefaultObject();
             Shipment retrievedObject;
 
-            retrievedObject = apiResource.RetrieveShipment((string) testObject.ObjectId).Result;
+            retrievedObject = shippoClient.RetrieveShipment((string)testObject.ObjectId).Result;
             Assert.AreEqual(testObject.ObjectId, retrievedObject.ObjectId);
         }
 
@@ -34,7 +36,7 @@ namespace ShippoTesting {
             parameters.Add("results", "1");
             parameters.Add("page", "1");
 
-            var parcels = apiResource.AllShipments(parameters).Result;
+            var parcels = shippoClient.AllShipments(parameters).Result;
             Assert.AreNotEqual(0, parcels.Data.Count);
         }
 
@@ -58,7 +60,7 @@ namespace ShippoTesting {
             //FIXME     parameters.Add("extra", "{signature_confirmation: true}");
             //FIXME     parameters.Add("customs_declaration", "");
 
-            return GetAPIResource().CreateShipment(parameters).Result;
+            return GetShippoClient().CreateShipment(parameters).Result;
         }
     }
 }

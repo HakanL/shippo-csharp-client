@@ -16,7 +16,7 @@ namespace ShippoTesting
         public void TestValidCreate()
         {
             Parcel testObject = ParcelTest.GetDefaultObject();
-            Assert.AreEqual("VALID", testObject.ObjectState);
+            Assert.AreEqual(ShippoEnums.ObjectStates.VALID, testObject.ObjectState);
         }
 
         [Test]
@@ -25,7 +25,7 @@ namespace ShippoTesting
             Parcel testObject = ParcelTest.GetDefaultObject();
             Parcel retrievedObject;
 
-            retrievedObject = apiResource.RetrieveParcel((string)testObject.ObjectId).Result;
+            retrievedObject = shippoClient.RetrieveParcel((string)testObject.ObjectId).Result;
             Assert.AreEqual(testObject.ObjectId, retrievedObject.ObjectId);
         }
 
@@ -36,7 +36,7 @@ namespace ShippoTesting
             parameters.Add("results", "10");
             parameters.Add("page", "1");
 
-            var parcels = apiResource.AllParcels(parameters).Result;
+            var parcels = shippoClient.AllParcels(parameters).Result;
             Assert.AreNotEqual(0, parcels.Data.Count);
         }
 
@@ -54,7 +54,7 @@ namespace ShippoTesting
                 Metadata = "Customer ID 123456"
             };
 
-            return GetAPIResource().CreateParcel(parameters).Result;
+            return GetShippoClient().CreateParcel(parameters).Result;
         }
     }
 }
