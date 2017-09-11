@@ -34,6 +34,11 @@ namespace Shippo.Models
                     this.addressFromObject = (CreateAddress)value;
                     this.addressFromObjectId = null;
                 }
+                else if (value is Address)
+                {
+                    this.addressFromObject = null;
+                    this.addressFromObjectId = (value as Address).ObjectId;
+                }
                 else if (value is string)
                 {
                     this.addressFromObject = null;
@@ -60,6 +65,11 @@ namespace Shippo.Models
                 {
                     this.addressToObject = (CreateAddress)value;
                     this.addressToObjectId = null;
+                }
+                else if (value is Address)
+                {
+                    this.addressToObject = null;
+                    this.addressToObjectId = (value as Address).ObjectId;
                 }
                 else if (value is string)
                 {
@@ -105,6 +115,11 @@ namespace Shippo.Models
                 {
                     this.addressReturnObject = (CreateAddress)value;
                     this.addressReturnObjectId = null;
+                }
+                else if (value is Address)
+                {
+                    this.addressReturnObject = null;
+                    this.addressReturnObjectId = (value as Address).ObjectId;
                 }
                 else if (value is string)
                 {

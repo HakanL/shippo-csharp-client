@@ -4,6 +4,7 @@ using System.Collections;
 using Shippo;
 using System.Collections.Generic;
 using Shippo.Models;
+using System.Threading.Tasks;
 
 namespace ShippoTesting
 {
@@ -11,23 +12,23 @@ namespace ShippoTesting
     public class AddressTest : ShippoTest
     {
         [Test]
-        public void TestValidCreate()
+        public async Task TestValidCreate()
         {
-            Address testObject = AddressTest.GetDefaultObject();
+            Address testObject = await AddressTest.GetDefaultObject();
             Assert.AreEqual(true, testObject.IsComplete);
         }
 
         [Test]
-        public void TestValidRetrieve()
+        public async Task TestValidRetrieve()
         {
-            Address testObject = AddressTest.GetDefaultObject();
+            Address testObject = await AddressTest.GetDefaultObject();
             Address retrievedObject;
 
-            retrievedObject = shippoClient.RetrieveAddress((string)testObject.ObjectId).Result;
+            retrievedObject = await shippoClient.RetrieveAddress((string)testObject.ObjectId);
             Assert.AreEqual(testObject.ObjectId, retrievedObject.ObjectId);
         }
 
-        public static Address GetDefaultObject()
+        public static async Task<Address> GetDefaultObject()
         {
             var parameters = new CreateAddress
             {
@@ -46,10 +47,10 @@ namespace ShippoTesting
                 Validate = true
             };
 
-            return GetShippoClient().CreateAddress(parameters).Result;
+            return await GetShippoClient().CreateAddress(parameters);
         }
 
-        public static Address GetDefaultObject2()
+        public static async Task<Address> GetDefaultObject2()
         {
             var parameters = new CreateAddress
             {
@@ -67,7 +68,7 @@ namespace ShippoTesting
                 Metadata = "Customer ID 123456"
             };
 
-            return GetShippoClient().CreateAddress(parameters).Result;
+            return await GetShippoClient().CreateAddress(parameters);
         }
     }
 }

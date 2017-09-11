@@ -153,36 +153,40 @@ namespace ShippoExample
 
             // create Shipment object
             Console.WriteLine("Creating Shipment object..");
-            Shipment shipment = client.CreateShipment(shipmentTable).Result;
-
-            // select desired shipping rate according to your business logic
-            // we simply select the first rate in this example
-            Rate rate = shipment.Rates[0];
-
-            Console.WriteLine("Getting shipping label..");
-            var transactionParameters = new Dictionary<string, object>();
-            transactionParameters.Add("rate", rate.ObjectId);
-            transactionParameters.Add("async", false);
-            Transaction transaction = client.CreateTransaction(transactionParameters).Result;
-
-            if (((String)transaction.Status).Equals("SUCCESS", StringComparison.OrdinalIgnoreCase))
+            Task.Run(async () =>
             {
-                Console.WriteLine("Label url : " + transaction.LabelURL);
-                Console.WriteLine("Tracking number : " + transaction.TrackingNumber);
-            }
-            else
-            {
-                Console.WriteLine("An Error has occured while generating your label. Messages : " + transaction.Messages);
-            }
+                Shipment shipment = await client.CreateShipment(shipmentTable);
 
-            Console.WriteLine("\nBatch\n");
-            Task.Run(async () => await RunBatchExample(client)).Wait();
+                // select desired shipping rate according to your business logic
+                // we simply select the first rate in this example
+                Rate rate = shipment.Rates[0];
 
-            Console.WriteLine("\nTrack\n");
-            Task.Run(async () => await RunTrackingExample(client)).Wait();
+                Console.WriteLine("Getting shipping label..");
+                var transactionParameters = new Dictionary<string, object>();
+                transactionParameters.Add("rate", rate.ObjectId);
+                transactionParameters.Add("async", false);
+                Transaction transaction = await client.CreateTransaction(transactionParameters);
 
-            Console.WriteLine("\nValidating International Address\n");
-            Task.Run(async () => await RunInternationalAddressValidationExample(client)).Wait();
+                if (((String)transaction.Status).Equals("SUCCESS", StringComparison.OrdinalIgnoreCase))
+                {
+                    Console.WriteLine("Label url : " + transaction.LabelURL);
+                    Console.WriteLine("Tracking number : " + transaction.TrackingNumber);
+                }
+                else
+                {
+                    Console.WriteLine("An Error has occured while generating your label. Messages : " + transaction.Messages);
+                }
+
+                Console.WriteLine("\nBatch\n");
+                await RunBatchExample(client);
+
+                Console.WriteLine("\nTrack\n");
+                await RunTrackingExample(client);
+
+                Console.WriteLine("\nValidating International Address\n");
+                await RunInternationalAddressValidationExample(client);
+
+            }).Wait();
         }
     }
 }

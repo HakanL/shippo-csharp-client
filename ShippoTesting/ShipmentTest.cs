@@ -5,6 +5,7 @@ using System.Collections;
 using Shippo;
 using System.Collections.Generic;
 using Shippo.Models;
+using System.Threading.Tasks;
 
 namespace ShippoTesting
 {
@@ -13,38 +14,38 @@ namespace ShippoTesting
     {
 
         [Test]
-        public void TestValidCreate()
+        public async Task TestValidCreate()
         {
-            Shipment testObject = ShipmentTest.GetDefaultObject();
+            Shipment testObject = await ShipmentTest.GetDefaultObject();
             Assert.AreEqual(ShippoEnums.ShippingStatuses.SUCCESS, testObject.Status);
         }
 
         [Test]
-        public void TestValidRetrieve()
+        public async Task TestValidRetrieve()
         {
-            Shipment testObject = ShipmentTest.GetDefaultObject();
+            Shipment testObject = await ShipmentTest.GetDefaultObject();
             Shipment retrievedObject;
 
-            retrievedObject = shippoClient.RetrieveShipment((string)testObject.ObjectId).Result;
+            retrievedObject = await shippoClient.RetrieveShipment((string)testObject.ObjectId);
             Assert.AreEqual(testObject.ObjectId, retrievedObject.ObjectId);
         }
 
         [Test]
-        public void TestListAll()
+        public async Task TestListAll()
         {
             var parameters = new Dictionary<string, string>();
             parameters.Add("results", "1");
             parameters.Add("page", "1");
 
-            var parcels = shippoClient.AllShipments(parameters).Result;
+            var parcels = await shippoClient.AllShipments(parameters);
             Assert.AreNotEqual(0, parcels.Data.Count);
         }
 
-        public static Shipment GetDefaultObject()
+        public static async Task<Shipment> GetDefaultObject()
         {
-            Address addressFrom = AddressTest.GetDefaultObject();
-            Address addressTo = AddressTest.GetDefaultObject2();
-            Parcel parcel = ParcelTest.GetDefaultObject();
+            Address addressFrom = await AddressTest.GetDefaultObject();
+            Address addressTo = await AddressTest.GetDefaultObject2();
+            Parcel parcel = await ParcelTest.GetDefaultObject();
 
             var parameters = new CreateShipment
             {
@@ -66,7 +67,7 @@ namespace ShippoTesting
                 SignatureConfirmation = ShippoEnums.SignatureConfirmations.STANDARD
             };
 
-            return GetShippoClient().CreateShipment(parameters).Result;
+            return await GetShippoClient().CreateShipment(parameters);
         }
     }
 }

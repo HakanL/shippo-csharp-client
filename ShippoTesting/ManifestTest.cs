@@ -39,21 +39,21 @@ namespace ShippoTesting
         [Test]
         public async Task TestValidRetrieve()
         {
-            Manifest testObject = await ManifestTest.GetDefaultObject(AddressTest.GetDefaultObject2());
+            Manifest testObject = await ManifestTest.GetDefaultObject(await AddressTest.GetDefaultObject2());
             Manifest retrievedObject;
 
-            retrievedObject = shippoClient.RetrieveManifest((string)testObject.ObjectId).Result;
+            retrievedObject = await shippoClient.RetrieveManifest((string)testObject.ObjectId);
             Assert.AreEqual(testObject.ObjectId, retrievedObject.ObjectId);
         }
 
         [Test]
-        public void TestListAll()
+        public async Task TestListAll()
         {
             var parameters = new Dictionary<string, string>();
             parameters.Add("results", "1");
             parameters.Add("page", "1");
 
-            var manifests = shippoClient.AllManifests(parameters).Result;
+            var manifests = await shippoClient.AllManifests(parameters);
             // This depends on the test account having at least one shipping manifest
             Assert.AreEqual(1, manifests.Data.Count);
         }
@@ -61,8 +61,8 @@ namespace ShippoTesting
         public static async Task<Manifest> GetDefaultObject(BaseAddress addressTo)
         {
             var parameters0 = new CreateShipment();
-            Address addressFrom = AddressTest.GetDefaultObject();
-            Parcel parcel = ParcelTest.GetDefaultObject();
+            Address addressFrom = await AddressTest.GetDefaultObject();
+            Parcel parcel = await ParcelTest.GetDefaultObject();
             parameters0.AddressFrom = addressFrom.ObjectId;
             parameters0.AddressTo = addressTo;
             parameters0.AddParcel(parcel.ObjectId);
@@ -97,7 +97,8 @@ namespace ShippoTesting
             var parameters2 = new CreateManifest
             {
                 ShipmentDate = DateTime.Now,
-                AddressFromObjectId = addressFrom.ObjectId
+                AddressFromObjectId = addressFrom.ObjectId,
+                CarrierAccount = "1234"
             };
 
             var transactions = new List<string>();

@@ -5,6 +5,7 @@ using System.Collections;
 using Shippo;
 using System.Collections.Generic;
 using Shippo.Models;
+using System.Threading.Tasks;
 
 namespace ShippoTesting
 {
@@ -13,34 +14,34 @@ namespace ShippoTesting
     {
 
         [Test]
-        public void TestValidCreate()
+        public async Task TestValidCreate()
         {
-            Parcel testObject = ParcelTest.GetDefaultObject();
+            Parcel testObject = await ParcelTest.GetDefaultObject();
             Assert.AreEqual(ShippoEnums.ObjectStates.VALID, testObject.ObjectState);
         }
 
         [Test]
-        public void TestValidRetrieve()
+        public async Task TestValidRetrieve()
         {
-            Parcel testObject = ParcelTest.GetDefaultObject();
+            Parcel testObject = await ParcelTest.GetDefaultObject();
             Parcel retrievedObject;
 
-            retrievedObject = shippoClient.RetrieveParcel((string)testObject.ObjectId).Result;
+            retrievedObject = await shippoClient.RetrieveParcel((string)testObject.ObjectId);
             Assert.AreEqual(testObject.ObjectId, retrievedObject.ObjectId);
         }
 
         [Test]
-        public void TestListAll()
+        public async Task TestListAll()
         {
             var parameters = new Dictionary<string, string>();
             parameters.Add("results", "10");
             parameters.Add("page", "1");
 
-            var parcels = shippoClient.AllParcels(parameters).Result;
+            var parcels = await shippoClient.AllParcels(parameters);
             Assert.AreNotEqual(0, parcels.Data.Count);
         }
 
-        public static Parcel GetDefaultObject()
+        public static async Task<Parcel> GetDefaultObject()
         {
             var parameters = new CreateParcel
             {
@@ -54,7 +55,7 @@ namespace ShippoTesting
                 Metadata = "Customer ID 123456"
             };
 
-            return GetShippoClient().CreateParcel(parameters).Result;
+            return await GetShippoClient().CreateParcel(parameters);
         }
     }
 }

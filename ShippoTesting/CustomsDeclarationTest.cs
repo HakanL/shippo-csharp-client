@@ -7,6 +7,7 @@ using System.Collections.Generic;
 
 using Shippo;
 using Shippo.Models;
+using System.Threading.Tasks;
 
 namespace ShippoTesting
 {
@@ -15,34 +16,34 @@ namespace ShippoTesting
     {
 
         [Test]
-        public void TestValidCreate()
+        public async Task TestValidCreate()
         {
-            CustomsDeclaration testObject = CustomsDeclarationTest.GetDefaultObject();
+            CustomsDeclaration testObject = await CustomsDeclarationTest.GetDefaultObject();
             Assert.AreEqual(ShippoEnums.ObjectStates.VALID, testObject.ObjectState);
         }
 
         [Test]
-        public void TestValidRetrieve()
+        public async Task TestValidRetrieve()
         {
-            CustomsDeclaration testObject = CustomsDeclarationTest.GetDefaultObject();
+            CustomsDeclaration testObject = await CustomsDeclarationTest.GetDefaultObject();
             CustomsDeclaration retrievedObject;
 
-            retrievedObject = shippoClient.RetrieveCustomsDeclaration((string)testObject.ObjectId).Result;
+            retrievedObject = await shippoClient.RetrieveCustomsDeclaration((string)testObject.ObjectId);
             Assert.AreEqual(testObject.ObjectId, retrievedObject.ObjectId);
         }
 
         [Test]
-        public void TestListAll()
+        public async Task TestListAll()
         {
             var parameters = new Dictionary<string, string>();
             parameters.Add("results", "1");
             parameters.Add("page", "1");
 
-            var parcels = shippoClient.AllCustomsDeclarations(parameters).Result;
+            var parcels = await shippoClient.AllCustomsDeclarations(parameters);
             Assert.AreNotEqual(0, parcels.Data.Count);
         }
 
-        public static CustomsDeclaration GetDefaultObject()
+        public static async Task<CustomsDeclaration> GetDefaultObject()
         {
             var parameters = new CreateCustomsDeclaration
             {
@@ -64,10 +65,10 @@ namespace ShippoTesting
                 Metadata = "Order ID #123123"
             };
 
-            CustomsItem customsItem = CustomsItemTest.GetDefaultObject();
+            CustomsItem customsItem = await CustomsItemTest.GetDefaultObject();
             parameters.Items.Add(customsItem.ObjectId);
 
-            return GetShippoClient().CreateCustomsDeclaration(parameters).Result;
+            return await GetShippoClient().CreateCustomsDeclaration(parameters);
         }
     }
 }

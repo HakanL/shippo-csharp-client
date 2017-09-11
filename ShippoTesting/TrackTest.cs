@@ -5,6 +5,7 @@ using System.Collections;
 using Shippo;
 using System.Collections.Generic;
 using Shippo.Models;
+using System.Threading.Tasks;
 
 namespace ShippoTesting
 {
@@ -15,9 +16,9 @@ namespace ShippoTesting
         private static readonly string CARRIER = "usps";
 
         [Test]
-        public void TestValidGetStatus()
+        public async Task TestValidGetStatus()
         {
-            Track track = GetShippoClient().RetrieveTracking(CARRIER, TRACKING_NO).Result;
+            Track track = await GetShippoClient().RetrieveTracking(CARRIER, TRACKING_NO);
             Assert.AreEqual(TRACKING_NO, track.TrackingNumber);
             Assert.IsNotNull(track.TrackingStatus);
             Assert.IsNotNull(track.TrackingHistory);
@@ -26,16 +27,16 @@ namespace ShippoTesting
         [Test]
         public void TestInvalidGetStatus()
         {
-            Assert.That(() => GetShippoClient().RetrieveTracking(CARRIER, "INVALID_ID"),
+            Assert.That(async () => await GetShippoClient().RetrieveTracking(CARRIER, "INVALID_ID"),
                         Throws.TypeOf<ShippoException>());
         }
 
         [Test]
-        public void TestValidRegisterWebhook()
+        public async Task TestValidRegisterWebhook()
         {
-            Track track = GetShippoClient().RetrieveTracking(CARRIER, TRACKING_NO).Result;
+            Track track = await GetShippoClient().RetrieveTracking(CARRIER, TRACKING_NO);
 
-            Track register = GetShippoClient().RegisterTrackingWebhook(CARRIER, track.TrackingNumber).Result;
+            Track register = await GetShippoClient().RegisterTrackingWebhook(CARRIER, track.TrackingNumber);
 
             Assert.IsNotNull(register.TrackingNumber);
             Assert.IsNotNull(register.TrackingHistory);

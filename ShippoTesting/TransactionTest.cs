@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 using Shippo;
 using Shippo.Models;
+using System.Threading.Tasks;
 
 namespace ShippoTesting {
     [TestFixture]
@@ -29,28 +30,28 @@ namespace ShippoTesting {
         } */
 
         [Test]
-        public void testListAll()
+        public async Task TestListAll()
         {
             var parameters = new Dictionary<string, string>();
             parameters.Add("results", "1");
             parameters.Add("page", "1");
 
-            var parcels = shippoClient.AllTransactions(parameters).Result;
+            var parcels = await shippoClient.AllTransactions(parameters);
             Assert.AreNotEqual(0, parcels.Data.Count);
         }
 
-        public static Transaction getDefaultObject()
+        public static async Task<Transaction> GetDefaultObject()
         {
             var parameters = new Dictionary<string, object>();
 
-            ShippoCollection<Rate> rateCollection = RateTest.GetDefaultObject();
+            ShippoCollection<Rate> rateCollection = await RateTest.GetDefaultObject();
             List<Rate> rateList = rateCollection.Data;
             Rate[] rateArray = rateList.ToArray();
 
             parameters.Add("rate", rateArray [0].ObjectId);
             parameters.Add("metadata", "Customer ID 123456");
 
-            return GetShippoClient().CreateTransactionSync(parameters).Result;
+            return await GetShippoClient().CreateTransactionSync(parameters);
         }
     }
 }
