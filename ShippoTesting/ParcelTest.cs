@@ -26,7 +26,7 @@ namespace ShippoTesting
             Parcel testObject = await ParcelTest.GetDefaultObject();
             Parcel retrievedObject;
 
-            retrievedObject = await shippoClient.RetrieveParcel((string)testObject.ObjectId);
+            retrievedObject = await shippoClient.RetrieveParcel(testObject.ObjectId);
             Assert.AreEqual(testObject.ObjectId, retrievedObject.ObjectId);
         }
 

@@ -10,40 +10,48 @@ namespace Shippo.Models
         public ShippoEnums.ObjectStates ObjectState { get; set; }
 
         [JsonProperty(PropertyName = "status")]
-        public object Status { get; set; }
+        public ShippoEnums.TransactionStatuses Status { get; set; }
 
         [JsonProperty(PropertyName = "object_created")]
-        public object ObjectCreated { get; set; }
+        public DateTime ObjectCreated { get; set; }
 
         [JsonProperty(PropertyName = "object_updated")]
-        public object ObjectUPdated { get; set; }
+        public DateTime ObjectUpdated { get; set; }
 
         [JsonProperty(PropertyName = "object_owner")]
-        public object ObjectOwner { get; set; }
+        public string ObjectOwner { get; set; }
 
-        [JsonProperty(PropertyName = "was_test")]
-        public object WasTest { get; set; }
+        [JsonProperty(PropertyName = "test")]
+        public bool Test { get; set; }
 
         [JsonProperty(PropertyName = "rate")]
-        public object Rate { get; set; }
+        public string Rate { get; set; }
 
         [JsonProperty(PropertyName = "tracking_number")]
-        public object TrackingNumber { get; set; }
+        public string TrackingNumber { get; set; }
 
         [JsonProperty(PropertyName = "tracking_status")]
-        public object TrackingStatus { get; set; }
+        public ShippoEnums.TrackingStatuses TrackingStatus { get; set; }
 
         [JsonProperty(PropertyName = "tracking_url_provider")]
-        public object TrackingUrlProvider { get; set; }
+        public string TrackingUrlProvider { get; set; }
+
+        [JsonProperty(PropertyName = "eta")]
+        public DateTime? Eta { get; set; }
+
+        [JsonProperty(PropertyName = "label_file_type")]
+        public ShippoEnums.LabelFiletypes LabelFileType { get; set; }
 
         [JsonProperty(PropertyName = "label_url")]
-        public object LabelURL { get; set; }
+        public string LabelURL { get; set; }
 
         [JsonProperty(PropertyName = "commercial_invoice_url")]
-        public object CommercialInvoiceUrl { get; set; }
+        public string CommercialInvoiceUrl { get; set; }
 
         [JsonProperty(PropertyName = "messages")]
-        public object Messages { get; set; }
+        public Message[] Messages { get; set; }
+
+        [JsonProperty(PropertyName = "metadata")]
+        public string Metadata { get; set; }
     }
 }
-

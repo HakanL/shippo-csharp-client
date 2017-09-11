@@ -23,12 +23,9 @@ namespace ShippoTesting
         public static async Task<ShippoCollection<Rate>> GetDefaultObject()
         {
             Shipment testObject = await ShipmentTest.GetDefaultObject();
-            var parameters = new Dictionary<string, object>();
-            parameters.Add("id", testObject.ObjectId);
-            parameters.Add("currency_code", "USD");
 
             // Use Synchronized rates method
-            return await GetShippoClient().GetShippingRatesSync(parameters);
+            return await GetShippoClient().GetShippingRatesSync(testObject.ObjectId, "USD");
         }
     }
 }

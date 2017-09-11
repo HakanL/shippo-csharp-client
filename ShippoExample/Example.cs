@@ -41,17 +41,19 @@ namespace ShippoExample
                                                           "CA", "94103", "US", "4151234568", "msship@gmail.com");
             CreateParcel[] parcels = { CreateParcel.CreateForShipment(5, 5, 5, DistanceUnits.@in, 2, MassUnits.oz) };
             var shipment = CreateShipment.CreateForBatch(addressFrom, addressTo, parcels);
-            var batchShipment = BatchShipment.CreateForBatchShipments(defaultCarrierAccount, "usps_priority", shipment);
+            var batchShipment = CreateBatchShipment.CreateForBatchShipments(defaultCarrierAccount, "usps_priority", shipment);
 
-            var batchShipments = new List<BatchShipment>();
+            var batchShipments = new List<CreateBatchShipment>();
             batchShipments.Add(batchShipment);
 
-            Batch batch = await resource.CreateBatch(
-                defaultCarrierAccount,
-                "usps_priority",
-                ShippoEnums.LabelFiletypes.PDF_4x6,
-                "BATCH #170",
-                batchShipments);
+            Batch batch = await resource.CreateBatch(new CreateBatch
+            {
+                DefaultCarrierAccount = defaultCarrierAccount,
+                DefaultServicelevelToken = "usps_priority",
+                LabelFiletype = ShippoEnums.LabelFiletypes.PDF_4x6,
+                Metadata = "BATCH #170",
+                BatchShipments = batchShipments
+            });
 
             Console.WriteLine("Batch Status = " + batch.Status);
             Console.WriteLine("Metadata = " + batch.Metadata);
@@ -162,12 +164,14 @@ namespace ShippoExample
                 Rate rate = shipment.Rates[0];
 
                 Console.WriteLine("Getting shipping label..");
-                var transactionParameters = new Dictionary<string, object>();
-                transactionParameters.Add("rate", rate.ObjectId);
-                transactionParameters.Add("async", false);
+                var transactionParameters = new CreateTransaction
+                {
+                    Rate = rate.ObjectId,
+                    Async = false
+                };
                 Transaction transaction = await client.CreateTransaction(transactionParameters);
 
-                if (((String)transaction.Status).Equals("SUCCESS", StringComparison.OrdinalIgnoreCase))
+                if (transaction.Status == ShippoEnums.TransactionStatuses.SUCCESS)
                 {
                     Console.WriteLine("Label url : " + transaction.LabelURL);
                     Console.WriteLine("Tracking number : " + transaction.TrackingNumber);

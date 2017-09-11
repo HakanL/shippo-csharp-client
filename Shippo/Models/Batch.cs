@@ -11,10 +11,10 @@ namespace Shippo.Models
         public ShippoEnums.Statuses Status;
 
         [JsonProperty(PropertyName = "object_created")]
-        public DateTime? ObjectCreated;
+        public DateTime ObjectCreated;
 
         [JsonProperty(PropertyName = "object_updated")]
-        public DateTime? ObjectUpdated;
+        public DateTime ObjectUpdated;
 
         [JsonProperty(PropertyName = "object_owner")]
         public string ObjectOwner;
@@ -35,7 +35,7 @@ namespace Shippo.Models
         public BatchShipments BatchShipments;
 
         [JsonProperty(PropertyName = "label_url")]
-        public List<String> LabelUrl;
+        public string[] LabelUrl;
 
         [JsonProperty(PropertyName = "object_results")]
         public ObjectResults ObjectResults;

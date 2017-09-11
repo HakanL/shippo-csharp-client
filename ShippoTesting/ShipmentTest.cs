@@ -26,7 +26,7 @@ namespace ShippoTesting
             Shipment testObject = await ShipmentTest.GetDefaultObject();
             Shipment retrievedObject;
 
-            retrievedObject = await shippoClient.RetrieveShipment((string)testObject.ObjectId);
+            retrievedObject = await shippoClient.RetrieveShipment(testObject.ObjectId);
             Assert.AreEqual(testObject.ObjectId, retrievedObject.ObjectId);
         }
 

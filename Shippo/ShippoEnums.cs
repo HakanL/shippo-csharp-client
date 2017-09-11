@@ -7,9 +7,11 @@ namespace Shippo
     {
         //TODO: Add EnumMember to all enums so they match the API but can be changed in this solution for better readability, etc
 
-        public enum LabelFiletypes { NONE, PNG, PDF, PDF_4x6, ZPLII }
+        public enum LabelFiletypes { PNG, PDF, PDF_4x6, PDF_A4, PDF_A6, ZPLII }
 
         public enum Statuses { VALIDATING, VALID, INVALID, PURCHASING, PURCHASED }
+
+        public enum BatchShipmentStatuses { INVALID, VALID, INCOMPLETE, TRANSACTION_FAILED }
 
         public enum ObjectResults { none, creation_failed, creation_succeeded, purchase_failed, purchase_succeeded }
 
@@ -26,6 +28,8 @@ namespace Shippo
         public enum IncoTerms { DDP, DDU }
 
         public enum ShippingStatuses { WAITING, QUEUED, SUCCESS, ERROR }
+
+        public enum RefundStatuses { QUEUED, PENDING, SUCCESS, ERROR }
 
         public enum ManifestStatuses { QUEUED, SUCCESS, ERROR }
 
@@ -66,5 +70,9 @@ namespace Shippo
             [EnumMember(Value = "09")]
             Code09
         }
+
+        public enum TransactionStatuses { WAITING, QUEUED, SUCCESS, ERROR, REFUNDED, REFUNDPENDING, REFUNDREJECTED }
+
+        public enum TrackingStatuses { UNKNOWN, DELIVERED, TRANSIT, FAILURE, RETURNED }
     }
 }

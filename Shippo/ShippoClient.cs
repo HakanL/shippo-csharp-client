@@ -57,20 +57,6 @@ namespace Shippo
             set { this.apiClient.ApiVersion = value; }
         }
 
-        // Generate URL Encoded parameters for GET requests
-        private string GenerateURLEncodedFromHashmap(IDictionary<string, object> propertyMap)
-        {
-            var str = new StringBuilder();
-            foreach (var pair in propertyMap)
-            {
-                str.AppendFormat("{0}={1}&", pair.Key, pair.Value);
-            }
-            if (str.Length > 0)
-                str.Length--;
-
-            return str.ToString();
-        }
-
         private string GenerateURLEncodedFromHashmap(IDictionary<string, string> propertyMap)
         {
             var str = new StringBuilder();
@@ -176,40 +162,30 @@ namespace Shippo
 
         #region Rate
 
-        public async Task<ShippoCollection<Rate>> CreateRate(IDictionary<string, object> parameters)
+        public async Task<ShippoCollection<Rate>> GetShippingRates(string shipmentId, string currencyCode)
         {
-            string ep = string.Format("{0}/shipments/{1}/rates/{2}", apiEndpoint, parameters["id"], parameters["currency_code"]);
+            string ep = string.Format("{0}/shipments/{1}/rates/{2}", apiEndpoint, shipmentId, currencyCode);
             return await this.apiClient.DoRequestAsync<ShippoCollection<Rate>>(ep, HttpMethod.Get);
         }
 
-        public Task<ShippoCollection<Rate>> GetShippingRatesSync(string objectId)
+        public async Task<ShippoCollection<Rate>> GetShippingRatesSync(string shipmentId, string currencyCode = "")
         {
-            var parameters = new Dictionary<string, object>();
-            parameters.Add("id", objectId);
-            parameters.Add("currency_code", "");
-            return GetShippingRatesSync(parameters);
-        }
-
-        public async Task<ShippoCollection<Rate>> GetShippingRatesSync(IDictionary<string, object> parameters)
-        {
-
-            string object_id = (string)parameters["id"];
-            Shipment shipment = await RetrieveShipment(object_id);
-            ShippoEnums.ShippingStatuses object_status = shipment.Status;
+            Shipment shipment = await RetrieveShipment(shipmentId);
+            ShippoEnums.ShippingStatuses shippingStatus = shipment.Status;
             long startTime = DateTimeExtensions.UnixTimeNow();
 
-            while (object_status == ShippoEnums.ShippingStatuses.QUEUED || object_status == ShippoEnums.ShippingStatuses.WAITING)
+            while (shippingStatus == ShippoEnums.ShippingStatuses.QUEUED || shippingStatus == ShippoEnums.ShippingStatuses.WAITING)
             {
                 if (DateTimeExtensions.UnixTimeNow() - startTime > RatesReqTimeout)
                 {
                     throw new RequestTimeoutException(
                         "A timeout has occured while waiting for your rates to generate. Try retrieving the Shipment object again and check if object_status is updated. If this issue persists, please contact support@goshippo.com");
                 }
-                shipment = await RetrieveShipment(object_id);
-                object_status = shipment.Status;
+                shipment = await RetrieveShipment(shipmentId);
+                shippingStatus = shipment.Status;
             }
 
-            return await CreateRate(parameters);
+            return await GetShippingRates(shipmentId, currencyCode);
         }
 
         public async Task<Rate> RetrieveRate(string id)
@@ -222,29 +198,29 @@ namespace Shippo
 
         #region Transaction
 
-        public async Task<Transaction> CreateTransaction(IDictionary<string, object> parameters)
+        public async Task<Transaction> CreateTransaction(CreateTransaction createTransaction)
         {
             string ep = string.Format("{0}/transactions", apiEndpoint);
-            return await this.apiClient.DoRequestAsync<Transaction>(ep, HttpMethod.Post, Serialize(parameters));
+            return await this.apiClient.DoRequestAsync<Transaction>(ep, HttpMethod.Post, Serialize(createTransaction));
         }
 
-        public async Task<Transaction> CreateTransactionSync(IDictionary<string, object> parameters)
+        public async Task<Transaction> CreateTransactionSync(CreateTransaction createTransaction)
         {
             string ep = string.Format("{0}/transactions", apiEndpoint);
-            Transaction transaction = await this.apiClient.DoRequestAsync<Transaction>(ep, HttpMethod.Post, Serialize(parameters));
-            string object_id = (string)transaction.ObjectId;
-            string object_status = (string)transaction.Status;
+            Transaction transaction = await this.apiClient.DoRequestAsync<Transaction>(ep, HttpMethod.Post, Serialize(createTransaction));
+            string transactionId = transaction.ObjectId;
+            var transactionStatus = transaction.Status;
             long startTime = DateTimeExtensions.UnixTimeNow();
 
-            while (object_status.Equals("QUEUED", StringComparison.OrdinalIgnoreCase) || object_status.Equals("WAITING", StringComparison.OrdinalIgnoreCase))
+            while (transactionStatus == ShippoEnums.TransactionStatuses.QUEUED || transactionStatus == ShippoEnums.TransactionStatuses.WAITING)
             {
                 if (DateTimeExtensions.UnixTimeNow() - startTime > TransactionReqTimeout)
                 {
                     throw new RequestTimeoutException(
-                        "A timeout has occured while waiting for your label to generate. Try retreiving the Transaction object again and check if object_status is updated. If this issue persists, please contact support@goshippo.com");
+                        "A timeout has occured while waiting for your label to generate. Try retrieving the Transaction object again and check if object_status is updated. If this issue persists, please contact support@goshippo.com");
                 }
-                transaction = await RetrieveTransaction(object_id);
-                object_status = (string)transaction.Status;
+                transaction = await RetrieveTransaction(transactionId);
+                transactionStatus = transaction.Status;
             }
 
             return transaction;
@@ -266,10 +242,10 @@ namespace Shippo
 
         #region CustomsItem
 
-        public async Task<CustomsItem> CreateCustomsItem(CreateCustomsItem parameters)
+        public async Task<CustomsItem> CreateCustomsItem(CreateCustomsItem createCustomsItem)
         {
             string ep = string.Format("{0}/customs/items", apiEndpoint);
-            return await this.apiClient.DoRequestAsync<CustomsItem>(ep, HttpMethod.Post, Serialize(parameters));
+            return await this.apiClient.DoRequestAsync<CustomsItem>(ep, HttpMethod.Post, Serialize(createCustomsItem));
         }
 
         public async Task<CustomsItem> RetrieveCustomsItem(string id)
@@ -316,15 +292,15 @@ namespace Shippo
             return await this.apiClient.DoRequestAsync<CarrierAccount>(ep, HttpMethod.Post, Serialize(createCarrierAccount));
         }
 
-        public async Task<CarrierAccount> RetrieveCarrierAccount(string object_id)
+        public async Task<CarrierAccount> RetrieveCarrierAccount(string carrierAccountId)
         {
-            string ep = string.Format("{0}/carrier_accounts/{1}", apiEndpoint, object_id);
+            string ep = string.Format("{0}/carrier_accounts/{1}", apiEndpoint, carrierAccountId);
             return await this.apiClient.DoRequestAsync<CarrierAccount>(ep, HttpMethod.Get);
         }
 
-        public async Task<CarrierAccount> UpdateCarrierAccount(string object_id, IDictionary<string, string> parameters = null, bool? active = null)
+        public async Task<CarrierAccount> UpdateCarrierAccount(string carrierAccountId, IDictionary<string, string> parameters = null, bool? active = null)
         {
-            string ep = string.Format("{0}/carrier_accounts/{1}", apiEndpoint, object_id);
+            string ep = string.Format("{0}/carrier_accounts/{1}", apiEndpoint, carrierAccountId);
 
             var updateCarrierAccount = new UpdateCarrierAccount
             {
@@ -345,10 +321,10 @@ namespace Shippo
 
         #region Refund
 
-        public async Task<Refund> CreateRefund(IDictionary<string, object> parameters)
+        public async Task<Refund> CreateRefund(CreateRefund createRefund)
         {
             string ep = string.Format("{0}/refunds", apiEndpoint);
-            return await this.apiClient.DoRequestAsync<Refund>(ep, HttpMethod.Post, Serialize(parameters));
+            return await this.apiClient.DoRequestAsync<Refund>(ep, HttpMethod.Post, Serialize(createRefund));
         }
 
         public async Task<Refund> RetrieveRefund(string id)
@@ -389,54 +365,52 @@ namespace Shippo
 
         #region Batch
 
-        public async Task<Batch> CreateBatch(
-            string carrierAccount,
-            string servicelevelToken,
-            ShippoEnums.LabelFiletypes labelFiletype,
-            string metadata,
-            IEnumerable<BatchShipment> batchShipments)
+        public async Task<Batch> CreateBatch(CreateBatch createBatch)
         {
             string ep = string.Format("{0}/batches", apiEndpoint);
-            var parameters = new Dictionary<string, object>();
-            parameters.Add("default_carrier_account", carrierAccount);
-            parameters.Add("default_servicelevel_token", servicelevelToken);
-            if (labelFiletype != ShippoEnums.LabelFiletypes.NONE)
-                parameters.Add("label_filetype", labelFiletype);
-            parameters.Add("metadata", metadata);
-            parameters.Add("batch_shipments", batchShipments);
-            return await this.apiClient.DoRequestAsync<Batch>(ep, HttpMethod.Post, Serialize(parameters));
+            return await this.apiClient.DoRequestAsync<Batch>(ep, HttpMethod.Post, Serialize(createBatch));
         }
 
         public async Task<Batch> RetrieveBatch(string id, uint page, ShippoEnums.ObjectResults objectResults)
         {
             string ep = string.Format("{0}/batches/{1}", apiEndpoint, System.Net.WebUtility.HtmlEncode(id));
-            var parameters = new Dictionary<string, object>();
+            var queryParams = new StringBuilder();
             if (page > 0)
-                parameters.Add("page", page);
+                queryParams.AppendFormat("&page={0}", page);
             if (objectResults != ShippoEnums.ObjectResults.none)
-                parameters.Add("object_results", objectResults);
-            if (parameters.Count != 0)
-                ep = string.Format("{0}?{1}", ep, GenerateURLEncodedFromHashmap(parameters));
+                queryParams.AppendFormat("&object_results={0}", objectResults);
+            if (queryParams.Length > 0)
+            {
+                string parameters = queryParams.ToString().TrimStart('&');
+                ep = string.Format("{0}?{1}", ep, parameters);
+            }
             return await this.apiClient.DoRequestAsync<Batch>(ep, HttpMethod.Get);
         }
 
-        public async Task<Batch> AddShipmentsToBatch(string id, IEnumerable<string> shipmentIds)
+        public async Task<Batch> AddShipmentsToBatch(string batchId, IEnumerable<CreateBatchShipment> shipments)
         {
-            string ep = string.Format("{0}/batches/{1}/add_shipments", apiEndpoint, System.Net.WebUtility.HtmlEncode(id));
-            var shipments = new List<IDictionary<string, object>>();
-            foreach (string shipmentId in shipmentIds)
-            {
-                var shipmentTable = new Dictionary<string, object>();
-                shipmentTable.Add("shipment", shipmentId);
-                shipments.Add(shipmentTable);
-            }
-
+            string ep = string.Format("{0}/batches/{1}/add_shipments", apiEndpoint, System.Net.WebUtility.HtmlEncode(batchId));
             return await this.apiClient.DoRequestAsync<Batch>(ep, HttpMethod.Post, Serialize(shipments));
         }
 
-        public async Task<Batch> RemoveShipmentsFromBatch(string id, IEnumerable<string> shipmentIds)
+        public async Task<Batch> AddShipmentsToBatch(string batchId, IEnumerable<string> shipmentIds)
         {
-            string ep = string.Format("{0}/batches/{1}/remove_shipments", apiEndpoint, System.Net.WebUtility.HtmlEncode(id));
+            var list = new List<CreateBatchShipment>();
+            foreach (string shipmentId in shipmentIds)
+            {
+                var createBatchShipment = new CreateBatchShipment
+                {
+                    Shipment = shipmentId
+                };
+                list.Add(createBatchShipment);
+            }
+            string ep = string.Format("{0}/batches/{1}/add_shipments", apiEndpoint, System.Net.WebUtility.HtmlEncode(batchId));
+            return await this.apiClient.DoRequestAsync<Batch>(ep, HttpMethod.Post, Serialize(list));
+        }
+
+        public async Task<Batch> RemoveShipmentsFromBatch(string batchId, IEnumerable<string> shipmentIds)
+        {
+            string ep = string.Format("{0}/batches/{1}/remove_shipments", apiEndpoint, System.Net.WebUtility.HtmlEncode(batchId));
             return await this.apiClient.DoRequestAsync<Batch>(ep, HttpMethod.Post, Serialize(shipmentIds));
         }
 

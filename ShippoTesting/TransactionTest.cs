@@ -7,9 +7,11 @@ using Shippo;
 using Shippo.Models;
 using System.Threading.Tasks;
 
-namespace ShippoTesting {
+namespace ShippoTesting
+{
     [TestFixture]
-    public class TransactionTest : ShippoTest {
+    public class TransactionTest : ShippoTest
+    {
 
         /* Intentionally commented; cannot be tested without proper billing credentials
         [Test]
@@ -25,7 +27,7 @@ namespace ShippoTesting {
             Transaction testObject = TransactionTest.getDefaultObject();
             Transaction retrievedObject;
 
-            retrievedObject = apiResource.RetrieveTransaction((string) testObject.ObjectId);
+            retrievedObject = apiResource.RetrieveTransaction(testObject.ObjectId);
             Assert.AreEqual(testObject.ObjectId, retrievedObject.ObjectId);
         } */
 
@@ -42,14 +44,15 @@ namespace ShippoTesting {
 
         public static async Task<Transaction> GetDefaultObject()
         {
-            var parameters = new Dictionary<string, object>();
-
             ShippoCollection<Rate> rateCollection = await RateTest.GetDefaultObject();
             List<Rate> rateList = rateCollection.Data;
             Rate[] rateArray = rateList.ToArray();
 
-            parameters.Add("rate", rateArray [0].ObjectId);
-            parameters.Add("metadata", "Customer ID 123456");
+            var parameters = new CreateTransaction
+            {
+                Rate = rateArray[0].ObjectId,
+                Metadata = "Customer ID 123456"
+            };
 
             return await GetShippoClient().CreateTransactionSync(parameters);
         }

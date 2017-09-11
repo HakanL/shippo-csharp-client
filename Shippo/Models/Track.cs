@@ -36,7 +36,7 @@ namespace Shippo.Models
         public TrackingStatus TrackingStatus;
 
         [JsonProperty(PropertyName = "tracking_history")]
-        public List<TrackingHistory> TrackingHistory;
+        public TrackingHistory[] TrackingHistory;
 
         [JsonProperty(PropertyName = "metadata")]
         public string Metadata;

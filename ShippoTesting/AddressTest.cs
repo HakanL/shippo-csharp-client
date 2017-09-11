@@ -24,7 +24,7 @@ namespace ShippoTesting
             Address testObject = await AddressTest.GetDefaultObject();
             Address retrievedObject;
 
-            retrievedObject = await shippoClient.RetrieveAddress((string)testObject.ObjectId);
+            retrievedObject = await shippoClient.RetrieveAddress(testObject.ObjectId);
             Assert.AreEqual(testObject.ObjectId, retrievedObject.ObjectId);
         }
 

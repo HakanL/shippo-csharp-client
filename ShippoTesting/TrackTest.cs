@@ -45,7 +45,7 @@ namespace ShippoTesting
         [Test]
         public void TestInvalidRegisterWebhook()
         {
-            Assert.That(() => GetShippoClient().RegisterTrackingWebhook(CARRIER, "INVALID_ID"),
+            Assert.That(async () => await GetShippoClient().RegisterTrackingWebhook(CARRIER, "INVALID_ID"),
                         Throws.TypeOf<ShippoException>());
         }
     }

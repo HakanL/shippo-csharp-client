@@ -7,20 +7,22 @@ namespace Shippo.Models
     public class Refund : ShippoId
     {
         [JsonProperty(PropertyName = "object_created")]
-        public object ObjectCreated { get; set; }
+        public DateTime ObjectCreated { get; set; }
 
         [JsonProperty(PropertyName = "object_updated")]
-        public object ObjectUpdated { get; set; }
+        public DateTime ObjectUpdated { get; set; }
 
         [JsonProperty(PropertyName = "object_owner")]
-        public object ObjectOwner { get; set; }
+        public string ObjectOwner { get; set; }
 
         [JsonProperty(PropertyName = "status")]
-        public object Status { get; set; }
+        public ShippoEnums.RefundStatuses Status { get; set; }
 
         [JsonProperty(PropertyName = "transaction")]
-        public object Transaction { get; set; }
+        public string Transaction { get; set; }
 
+        [JsonProperty(PropertyName = "test")]
+        public bool Test { get; set; }
     }
 }
 

@@ -42,7 +42,7 @@ namespace ShippoTesting
             Manifest testObject = await ManifestTest.GetDefaultObject(await AddressTest.GetDefaultObject2());
             Manifest retrievedObject;
 
-            retrievedObject = await shippoClient.RetrieveManifest((string)testObject.ObjectId);
+            retrievedObject = await shippoClient.RetrieveManifest(testObject.ObjectId);
             Assert.AreEqual(testObject.ObjectId, retrievedObject.ObjectId);
         }
 
@@ -81,24 +81,24 @@ namespace ShippoTesting
             parameters0.Async = false;
 
             Shipment shipment = await GetShippoClient().CreateShipment(parameters0);
-            var parameters1 = new Dictionary<string, object>();
-            parameters1.Add("id", shipment.ObjectId);
-            parameters1.Add("currency_code", "USD");
 
-            ShippoCollection<Rate> rateCollection = await GetShippoClient().GetShippingRatesSync(parameters1);
+            ShippoCollection<Rate> rateCollection = await GetShippoClient().GetShippingRatesSync(shipment.ObjectId, "USD");
             List<Rate> rateList = rateCollection.Data;
             Rate[] rateArray = rateList.ToArray();
 
-            parameters1.Add("rate", rateArray[0].ObjectId);
-            parameters1.Add("metadata", "Customer ID 123456");
+            var createTransaction = new CreateTransaction
+            {
+                Rate = rateArray[0].ObjectId,
+                Metadata = "Customer ID 123456"
+            };
 
-            Transaction transaction = await GetShippoClient().CreateTransactionSync(parameters1);
+            Transaction transaction = await GetShippoClient().CreateTransactionSync(createTransaction);
 
             var parameters2 = new CreateManifest
             {
                 ShipmentDate = DateTime.Now,
                 AddressFromObjectId = addressFrom.ObjectId,
-                CarrierAccount = "1234"
+                Provider = "usps"
             };
 
             var transactions = new List<string>();

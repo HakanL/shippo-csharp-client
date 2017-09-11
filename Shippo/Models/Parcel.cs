@@ -43,9 +43,9 @@ namespace Shippo.Models
         public string Metadata { get; set; }
 
         [JsonProperty(PropertyName = "extra")]
-        public object Extra;
+        public ParcelExtra Extra;
 
         [JsonProperty(PropertyName = "test")]
-        public bool? Test;
+        public bool Test;
     }
 }

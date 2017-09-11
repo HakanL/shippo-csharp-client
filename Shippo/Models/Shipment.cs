@@ -20,25 +20,25 @@ namespace Shippo.Models
         public string ObjectOwner { get; set; }
 
         [JsonProperty(PropertyName = "address_from")]
-        public object AddressFrom { get; set; }
+        public Address AddressFrom { get; set; }
 
         [JsonProperty(PropertyName = "address_to")]
-        public object AddressTo { get; set; }
+        public Address AddressTo { get; set; }
 
         [JsonProperty(PropertyName = "parcels")]
-        public object[] Parcels { get; set; }
+        public Parcel[] Parcels { get; set; }
 
         [JsonProperty(PropertyName = "shipment_date")]
         public DateTime ShipmentDate { get; set; }
 
         [JsonProperty(PropertyName = "address_return")]
-        public object AddressReturn { get; set; }
+        public Address AddressReturn { get; set; }
 
         [JsonProperty(PropertyName = "customs_declaration")]
         public string CustomsDeclaration { get; set; }
 
         [JsonProperty(PropertyName = "carrier_accounts")]
-        public List<string> CarrierAccounts;
+        public string[] CarrierAccounts;
 
         [JsonProperty(PropertyName = "metadata")]
         public string Metadata { get; set; }
@@ -50,7 +50,7 @@ namespace Shippo.Models
         public Rate[] Rates { get; set; }
 
         [JsonProperty(PropertyName = "messages")]
-        public object Messages { get; set; }
+        public Message[] Messages { get; set; }
 
         [JsonProperty(PropertyName = "test")]
         public bool Test;

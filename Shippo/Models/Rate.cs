@@ -7,49 +7,54 @@ namespace Shippo.Models
     public class Rate : ShippoId
     {
         [JsonProperty(PropertyName = "object_created")]
-        public object ObjectCreated { get; set; }
+        public DateTime ObjectCreated { get; set; }
 
         [JsonProperty(PropertyName = "object_owner")]
-        public object ObjectOwner { get; set; }
+        public string ObjectOwner { get; set; }
 
         [JsonProperty(PropertyName = "attributes")]
-        public object Attributes { get; set; }
+        public string[] Attributes { get; set; }
 
         [JsonProperty(PropertyName = "amount_local")]
-        public object AmountLocal { get; set; }
+        public decimal AmountLocal { get; set; }
 
         [JsonProperty(PropertyName = "currency_local")]
-        public object CurrencyLocal { get; set; }
+        public string CurrencyLocal { get; set; }
 
         [JsonProperty(PropertyName = "amount")]
-        public object Amount { get; set; }
+        public decimal Amount { get; set; }
 
         [JsonProperty(PropertyName = "currency")]
-        public object Currency { get; set; }
+        public string Currency { get; set; }
 
         [JsonProperty(PropertyName = "provider")]
-        public object Provider { get; set; }
+        public string Provider { get; set; }
 
         [JsonProperty(PropertyName = "provider_image_75")]
-        public object ProviderImage75 { get; set; }
+        public string ProviderImage75 { get; set; }
 
         [JsonProperty(PropertyName = "provider_image_200")]
-        public object ProviderImage200 { get; set; }
+        public string ProviderImage200 { get; set; }
 
         [JsonProperty(PropertyName = "servicelevel")]
-        public object Servicelevel { get; set; }
+        public RateServiceLevel Servicelevel { get; set; }
 
-        [JsonProperty(PropertyName = "days")]
-        public object Days { get; set; }
+        [JsonProperty(PropertyName = "estimated_days")]
+        public int EstimatedDays { get; set; }
 
         [JsonProperty(PropertyName = "duration_terms")]
-        public object DurationTerms { get; set; }
+        public string DurationTerms { get; set; }
+
+        [JsonProperty(PropertyName = "carrier_account")]
+        public string CarrierAccount { get; set; }
 
         [JsonProperty(PropertyName = "messages")]
-        public object Messages { get; set; }
+        public Message[] Messages { get; set; }
 
         [JsonProperty(PropertyName = "zone")]
-        public object Zone { get; set; }
+        public string Zone { get; set; }
 
+        [JsonProperty(PropertyName = "test")]
+        public bool Test { get; set; }
     }
 }

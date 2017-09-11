@@ -12,6 +12,6 @@ namespace Shippo.Models
         public bool IsValid { get; set; }
 
         [JsonProperty(PropertyName = "messages")]
-        public List<ValidationMessage> Messages { get; set; }
+        public ValidationMessage[] Messages { get; set; }
     }
 }

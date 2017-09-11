@@ -5,13 +5,10 @@ using Newtonsoft.Json;
 namespace Shippo.Models
 {
     [JsonObject(MemberSerialization.OptIn)]
-    public class BatchShipment : ShippoId
+    public class CreateBatchShipment
     {
         private CreateShipment shipmentObject;
         private string shipmentObjectId;
-
-        [JsonProperty(PropertyName = "status")]
-        public ShippoEnums.BatchShipmentStatuses Status;
 
         [JsonProperty(PropertyName = "carrier_account")]
         public string CarrierAccount;
@@ -46,20 +43,17 @@ namespace Shippo.Models
             }
         }
 
-        [JsonProperty(PropertyName = "transaction")]
-        public string TransactionObjectId;
-
-        [JsonProperty(PropertyName = "messages")]
-        public string[] Messages;
-
         [JsonProperty(PropertyName = "metadata")]
         public string Metadata;
 
-        public override string ToString()
+        public static CreateBatchShipment CreateForBatchShipments(string carrierAccount, string servicelevelToken, CreateShipment shipment)
         {
-            return string.Format("[BatchShipment: Status={0}, CarrierAccount={1}, ServicelevelToken={2}, " +
-                                 "Shipment={3}, Transaction={4}, Messages={5}, Metadata={6}]", Status,
-                                 CarrierAccount, ServicelevelToken, Shipment, TransactionObjectId, Messages, Metadata);
+            return new CreateBatchShipment
+            {
+                CarrierAccount = carrierAccount,
+                ServicelevelToken = servicelevelToken,
+                Shipment = shipment
+            };
         }
     }
 }

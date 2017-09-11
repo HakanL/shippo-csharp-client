@@ -23,8 +23,14 @@ namespace ShippoTesting
         [Test]
         public void TestInvalidCreate()
         {
-            Assert.That(() => GetShippoClient().CreateBatch("invalid_carrier_account", "invalid_servicelevel_token", ShippoEnums.LabelFiletypes.NONE, "", new List<BatchShipment>()),
-                        Throws.TypeOf<ShippoException>());
+            var createBatch = new CreateBatch
+            {
+                DefaultCarrierAccount = "invalid_carrier_account",
+                DefaultServicelevelToken = "invalid_servicelevel_token",
+                LabelFiletype = null,
+                Metadata = ""
+            };
+            Assert.That(async () => await GetShippoClient().CreateBatch(createBatch), Throws.TypeOf<ShippoException>());
         }
 
         [Test]
@@ -39,7 +45,7 @@ namespace ShippoTesting
         [Test]
         public void TestInvalidRetrieve()
         {
-            Assert.That(() => GetShippoClient().RetrieveBatch("INVALID_ID", 0, ShippoEnums.ObjectResults.none),
+            Assert.That(async () => await GetShippoClient().RetrieveBatch("INVALID_ID", 0, ShippoEnums.ObjectResults.none),
                         Throws.TypeOf<ShippoException>());
         }
 
@@ -49,23 +55,28 @@ namespace ShippoTesting
             Batch batch = await GetDefaultObject();
             Assert.AreEqual(batch.Status, ShippoEnums.Statuses.VALIDATING);
 
-            var shipmentIds = new List<string>();
             Shipment shipment = await ShipmentTest.GetDefaultObject();
-            shipmentIds.Add(shipment.ObjectId);
 
             Batch retrieve = await GetValidBatch(batch.ObjectId);
-            Batch newBatch = await GetShippoClient().AddShipmentsToBatch(retrieve.ObjectId, shipmentIds);
+            Batch newBatch = await GetShippoClient().AddShipmentsToBatch(retrieve.ObjectId, new CreateBatchShipment[] {
+                new CreateBatchShipment
+                {
+                    Shipment = shipment.ObjectId
+                }
+            });
 
-            Assert.AreEqual(retrieve.BatchShipments.Count + shipmentIds.Count, newBatch.BatchShipments.Count);
+            Assert.AreEqual(retrieve.BatchShipments.Count + 1, newBatch.BatchShipments.Count);
         }
 
         [Test]
         public void TestInvalidAddShipmentToBatch()
         {
-            var shipmentIds = new List<string>();
-            shipmentIds.Add("123");
-            Assert.That(() => GetShippoClient().AddShipmentsToBatch("INVALID_ID", shipmentIds),
-                         Throws.TypeOf<ShippoException>());
+            Assert.That(async () => await GetShippoClient().AddShipmentsToBatch("INVALID_ID", new CreateBatchShipment[] {
+                new CreateBatchShipment
+                {
+                    Shipment = "123"
+                }
+            }), Throws.TypeOf<ShippoException>());
         }
 
         [Test]
@@ -94,7 +105,7 @@ namespace ShippoTesting
         {
             var shipments = new List<string>();
             shipments.Add("123");
-            Assert.That(() => GetShippoClient().RemoveShipmentsFromBatch("INVALID_ID", shipments),
+            Assert.That(async () => await GetShippoClient().RemoveShipmentsFromBatch("INVALID_ID", shipments),
                         Throws.TypeOf<ShippoException>());
         }
 
@@ -110,7 +121,7 @@ namespace ShippoTesting
         [Test]
         public void TestInvalidPurchase()
         {
-            Assert.That(() => GetShippoClient().PurchaseBatch("INVALID_ID"),
+            Assert.That(async () => await GetShippoClient().PurchaseBatch("INVALID_ID"),
                         Throws.TypeOf<ShippoException>());
         }
 
@@ -151,17 +162,19 @@ namespace ShippoTesting
                                                           "CA", "94103", "US", "4151234568", "msship@gmail.com");
             CreateParcel[] parcels = { CreateParcel.CreateForShipment(5, 5, 5, DistanceUnits.@in, 2, MassUnits.oz) };
             var shipment = CreateShipment.CreateForBatch(addressFrom, addressTo, parcels);
-            var batchShipment = BatchShipment.CreateForBatchShipments(defaultCarrierAccount, "usps_priority", shipment);
+            var batchShipment = CreateBatchShipment.CreateForBatchShipments(defaultCarrierAccount, "usps_priority", shipment);
 
-            var batchShipments = new List<BatchShipment>();
+            var batchShipments = new List<CreateBatchShipment>();
             batchShipments.Add(batchShipment);
 
-            Batch batch = await GetShippoClient().CreateBatch(
-                defaultCarrierAccount,
-                "usps_priority",
-                ShippoEnums.LabelFiletypes.PDF_4x6,
-                "BATCH #170",
-                batchShipments);
+            Batch batch = await GetShippoClient().CreateBatch(new CreateBatch
+            {
+                DefaultCarrierAccount = defaultCarrierAccount,
+                DefaultServicelevelToken = "usps_priority",
+                LabelFiletype = ShippoEnums.LabelFiletypes.PDF_4x6,
+                Metadata = "BATCH #170",
+                BatchShipments = batchShipments
+            });
 
             Assert.AreEqual(ShippoEnums.Statuses.VALIDATING, batch.Status);
             return batch;

@@ -17,7 +17,7 @@ namespace Shippo.Models
         public string Previous;
 
         [JsonProperty(PropertyName = "results")]
-        public List<BatchShipment> Results;
+        public BatchShipment[] Results;
 
         public override string ToString()
         {

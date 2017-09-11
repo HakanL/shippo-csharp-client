@@ -31,7 +31,6 @@ namespace Shippo
         [JsonProperty("next")]
         public string Next { get; set; }
 
-
         [JsonProperty("results")]
         public List<T> Data { get; set; }
 

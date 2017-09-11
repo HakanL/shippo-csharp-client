@@ -28,7 +28,7 @@ namespace ShippoTesting
             CustomsDeclaration testObject = await CustomsDeclarationTest.GetDefaultObject();
             CustomsDeclaration retrievedObject;
 
-            retrievedObject = await shippoClient.RetrieveCustomsDeclaration((string)testObject.ObjectId);
+            retrievedObject = await shippoClient.RetrieveCustomsDeclaration(testObject.ObjectId);
             Assert.AreEqual(testObject.ObjectId, retrievedObject.ObjectId);
         }
 

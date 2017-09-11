@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard1.3</TargetFramework>
     <RootNamespace>Shippo</RootNamespace>
-    <Version>2.0.1</Version>
+    <Version>2.0.2</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>Haukcode.GoShippo</PackageId>
     <Authors>Hakan Lindestaf</Authors>
@@ -15,8 +15,8 @@
     <RepositoryType></RepositoryType>
     <PackageIconUrl>https://github.com/HakanL/shippo-csharp-client/raw/master/Icon.png</PackageIconUrl>
     <PackageTags>GoShippo</PackageTags>
-    <AssemblyVersion>2.0.1.0</AssemblyVersion>
-    <FileVersion>2.0.1.0</FileVersion>
+    <AssemblyVersion>2.0.2.0</AssemblyVersion>
+    <FileVersion>2.0.2.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
