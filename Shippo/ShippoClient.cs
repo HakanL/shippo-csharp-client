@@ -65,7 +65,8 @@ namespace Shippo
             {
                 str.AppendFormat("{0}={1}&", pair.Key, pair.Value);
             }
-            str.Length--;
+            if (str.Length > 0)
+                str.Length--;
 
             return str.ToString();
         }
@@ -80,7 +81,8 @@ namespace Shippo
                 {
                     str.AppendFormat("{0}={1}&", pair.Key, pair.Value);
                 }
-                str.Length--;
+                if (str.Length > 0)
+                    str.Length--;
             }
 
             return str.ToString();
@@ -254,7 +256,7 @@ namespace Shippo
             return await this.apiClient.DoRequestAsync<Transaction>(ep, HttpMethod.Get);
         }
 
-        public async Task<ShippoCollection<Transaction>> AllTransactions(IDictionary<string, object> parameters)
+        public async Task<ShippoCollection<Transaction>> AllTransactions(IDictionary<string, string> parameters)
         {
             string ep = string.Format("{0}/transactions?{1}", apiEndpoint, GenerateURLEncodedFromHashmap(parameters));
             return await this.apiClient.DoRequestAsync<ShippoCollection<Transaction>>(ep, HttpMethod.Get);
@@ -264,7 +266,7 @@ namespace Shippo
 
         #region CustomsItem
 
-        public async Task<CustomsItem> CreateCustomsItem(IDictionary<string, object> parameters)
+        public async Task<CustomsItem> CreateCustomsItem(CreateCustomsItem parameters)
         {
             string ep = string.Format("{0}/customs/items", apiEndpoint);
             return await this.apiClient.DoRequestAsync<CustomsItem>(ep, HttpMethod.Post, Serialize(parameters));
@@ -365,10 +367,10 @@ namespace Shippo
 
         #region Manifest
 
-        public async Task<Manifest> CreateManifest(IDictionary<string, object> parameters)
+        public async Task<Manifest> CreateManifest(CreateManifest createManifest)
         {
             string ep = string.Format("{0}/manifests", apiEndpoint);
-            return await this.apiClient.DoRequestAsync<Manifest>(ep, HttpMethod.Post, Serialize(parameters));
+            return await this.apiClient.DoRequestAsync<Manifest>(ep, HttpMethod.Post, Serialize(createManifest));
         }
 
         public async Task<Manifest> RetrieveManifest(string id)
@@ -387,8 +389,12 @@ namespace Shippo
 
         #region Batch
 
-        public async Task<Batch> CreateBatch(string carrierAccount, string servicelevelToken, ShippoEnums.LabelFiletypes labelFiletype,
-                                  string metadata, List<BatchShipment> batchShipments)
+        public async Task<Batch> CreateBatch(
+            string carrierAccount,
+            string servicelevelToken,
+            ShippoEnums.LabelFiletypes labelFiletype,
+            string metadata,
+            IEnumerable<BatchShipment> batchShipments)
         {
             string ep = string.Format("{0}/batches", apiEndpoint);
             var parameters = new Dictionary<string, object>();
@@ -414,7 +420,7 @@ namespace Shippo
             return await this.apiClient.DoRequestAsync<Batch>(ep, HttpMethod.Get);
         }
 
-        public async Task<Batch> AddShipmentsToBatch(string id, List<string> shipmentIds)
+        public async Task<Batch> AddShipmentsToBatch(string id, IEnumerable<string> shipmentIds)
         {
             string ep = string.Format("{0}/batches/{1}/add_shipments", apiEndpoint, System.Net.WebUtility.HtmlEncode(id));
             var shipments = new List<IDictionary<string, object>>();
@@ -428,7 +434,7 @@ namespace Shippo
             return await this.apiClient.DoRequestAsync<Batch>(ep, HttpMethod.Post, Serialize(shipments));
         }
 
-        public async Task<Batch> RemoveShipmentsFromBatch(string id, List<string> shipmentIds)
+        public async Task<Batch> RemoveShipmentsFromBatch(string id, IEnumerable<string> shipmentIds)
         {
             string ep = string.Format("{0}/batches/{1}/remove_shipments", apiEndpoint, System.Net.WebUtility.HtmlEncode(id));
             return await this.apiClient.DoRequestAsync<Batch>(ep, HttpMethod.Post, Serialize(shipmentIds));

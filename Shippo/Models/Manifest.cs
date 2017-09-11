@@ -7,28 +7,30 @@ namespace Shippo.Models
     public class Manifest : ShippoId
     {
         [JsonProperty(PropertyName = "object_created")]
-        public object ObjectCreated { get; set; }
+        public DateTime ObjectCreated { get; set; }
 
         [JsonProperty(PropertyName = "object_updated")]
-        public object ObjectUpdated { get; set; }
+        public DateTime ObjectUpdated { get; set; }
 
         [JsonProperty(PropertyName = "object_owner")]
-        public object ObjectOwner { get; set; }
+        public string ObjectOwner { get; set; }
 
         [JsonProperty(PropertyName = "status")]
-        public object Status { get; set; }
+        public ShippoEnums.ManifestStatuses Status { get; set; }
 
-        [JsonProperty(PropertyName = "provider")]
-        public object Provider { get; set; }
+        [JsonProperty(PropertyName = "carrier_account")]
+        public string CarrierAccount { get; set; }
 
-        [JsonProperty(PropertyName = "submission_date")]
-        public object SubmissionDate { get; set; }
+        [JsonProperty(PropertyName = "shipment_date")]
+        public DateTime ShipmentDate { get; set; }
 
         [JsonProperty(PropertyName = "address_from")]
-        public object AddressFrom { get; set; }
+        public string AddressFromObjectId { get; set; }
+
+        [JsonProperty(PropertyName = "transactions")]
+        public string[] TransactionsIds { get; set; }
 
         [JsonProperty(PropertyName = "documents")]
-        public object Documents { get; set; }
+        public string[] DocumentsURLs { get; set; }
     }
 }
-

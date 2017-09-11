@@ -16,7 +16,7 @@ namespace ShippoTesting
         public void TestValidCreate()
         {
             Shipment testObject = ShipmentTest.GetDefaultObject();
-            Assert.AreEqual("SUCCESS", testObject.Status);
+            Assert.AreEqual(ShippoEnums.ShippingStatuses.SUCCESS, testObject.Status);
         }
 
         [Test]
@@ -43,7 +43,7 @@ namespace ShippoTesting
         public static Shipment GetDefaultObject()
         {
             Address addressFrom = AddressTest.GetDefaultObject();
-            Address addressTo = AddressTest.GetDefaultObject_2();
+            Address addressTo = AddressTest.GetDefaultObject2();
             Parcel parcel = ParcelTest.GetDefaultObject();
 
             var parameters = new CreateShipment
@@ -54,11 +54,17 @@ namespace ShippoTesting
                 Metadata = "Customer ID 123456",
                 ShipmentDate = DateTime.Now
             };
-            //FIXME     parameters.Add("parcels", new String[]{ parcel.ObjectId});
-            //FIXME     parameters.Add("insurance_amount", "30");
-            //FIXME     parameters.Add("insurance_currency", "USD");
-            //FIXME     parameters.Add("extra", "{signature_confirmation: true}");
-            //FIXME     parameters.Add("customs_declaration", "");
+            parameters.AddParcel(parcel.ObjectId);
+            parameters.CustomsDeclaration = "";
+            parameters.Extra = new ShipmentExtra
+            {
+                Insurance = new ShipmentExtraInsurance
+                {
+                    Amount = 30,
+                    Currency = "USD"
+                },
+                SignatureConfirmation = ShippoEnums.SignatureConfirmations.STANDARD
+            };
 
             return GetShippoClient().CreateShipment(parameters).Result;
         }

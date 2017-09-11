@@ -49,7 +49,7 @@ namespace ShippoTesting
             return GetShippoClient().CreateAddress(parameters).Result;
         }
 
-        public static Address GetDefaultObject_2()
+        public static Address GetDefaultObject2()
         {
             var parameters = new CreateAddress
             {

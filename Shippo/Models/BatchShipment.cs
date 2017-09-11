@@ -17,7 +17,7 @@ namespace Shippo.Models
         public string ServicelevelToken;
 
         [JsonProperty(PropertyName = "shipment")]
-        public Object Shipment;
+        public object Shipment;
 
         [JsonProperty(PropertyName = "transaction")]
         public string Transaction;

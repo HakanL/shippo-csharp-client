@@ -35,7 +35,7 @@ namespace Shippo.Models
         public object AddressReturn { get; set; }
 
         [JsonProperty(PropertyName = "customs_declaration")]
-        public object CustomsDeclaration { get; set; }
+        public string CustomsDeclaration { get; set; }
 
         [JsonProperty(PropertyName = "carrier_accounts")]
         public List<string> CarrierAccounts;
@@ -44,7 +44,7 @@ namespace Shippo.Models
         public string Metadata { get; set; }
 
         [JsonProperty(PropertyName = "extra")]
-        public object Extra { get; set; }
+        public ShipmentExtra Extra { get; set; }
 
         [JsonProperty(PropertyName = "rates")]
         public Rate[] Rates { get; set; }

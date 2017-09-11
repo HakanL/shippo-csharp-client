@@ -41,19 +41,20 @@ namespace ShippoTesting
 
         public static CustomsItem GetDefaultObject()
         {
-            var parameters = new Dictionary<string, object>();
-            parameters.Add("description", "T-Shirt");
-            parameters.Add("quantity", "2");
-            parameters.Add("net_weight", "400");
-            parameters.Add("mass_unit", "g");
-            parameters.Add("value_amount", "20");
-            parameters.Add("value_currency", "USD");
-            parameters.Add("tariff_number", "");
-            parameters.Add("origin_country", "US");
-            parameters.Add("metadata", "Order ID #123123");
+            var parameters = new CreateCustomsItem
+            {
+                Description = "T-Shirt",
+                Quantity = 2,
+                NetWeight = 400,
+                MassUnit = MassUnits.g,
+                ValueAmount = 20,
+                ValueCurrency = "USD",
+                TariffNumber = "",
+                OriginCountry = "US",
+                Metadata = "Order ID #123123"
+            };
 
             return GetShippoClient().CreateCustomsItem(parameters).Result;
         }
     }
 }
-

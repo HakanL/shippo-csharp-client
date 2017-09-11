@@ -4,20 +4,8 @@ using Newtonsoft.Json;
 namespace Shippo.Models
 {
     [JsonObject(MemberSerialization.OptIn)]
-    public class CustomsItem : ShippoId
+    public class CreateCustomsItem
     {
-        [JsonProperty(PropertyName = "object_created")]
-        public DateTime ObjectCreated { get; set; }
-
-        [JsonProperty(PropertyName = "object_updated")]
-        public DateTime ObjectUpdated { get; set; }
-
-        [JsonProperty(PropertyName = "object_owner")]
-        public string ObjectOwner { get; set; }
-
-        [JsonProperty(PropertyName = "object_state")]
-        public ShippoEnums.ObjectStates ObjectState { get; set; }
-
         [JsonProperty(PropertyName = "description")]
         public string Description { get; set; }
 
@@ -36,20 +24,16 @@ namespace Shippo.Models
         [JsonProperty(PropertyName = "value_currency")]
         public string ValueCurrency { get; set; }
 
+        [JsonProperty(PropertyName = "origin_country")]
+        public string OriginCountry { get; set; }
+
         [JsonProperty(PropertyName = "tariff_number")]
         public string TariffNumber { get; set; }
 
         [JsonProperty(PropertyName = "sku_code")]
         public string SkuCode { get; set; }
 
-        [JsonProperty(PropertyName = "origin_country")]
-        public string OriginCountry { get; set; }
-
         [JsonProperty(PropertyName = "metadata")]
         public string Metadata { get; set; }
-
-        [JsonProperty(PropertyName = "test")]
-        public bool Test { get; set; }
     }
 }
-

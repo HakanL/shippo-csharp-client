@@ -31,7 +31,7 @@ namespace ShippoTesting {
         [Test]
         public void testListAll()
         {
-            var parameters = new Dictionary<string, object>();
+            var parameters = new Dictionary<string, string>();
             parameters.Add("results", "1");
             parameters.Add("page", "1");
 

@@ -15,7 +15,7 @@ namespace ShippoTesting
         {
             public MockAPIResource(string inputToken) : base(inputToken) { }
 
-            public HttpRequestMessage SetupRequestTest(HttpMethod method, String url)
+            public HttpRequestMessage SetupRequestTest(HttpMethod method, string url)
             {
                 return SetupRequest(method, url);
             }

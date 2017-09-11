@@ -141,18 +141,15 @@ namespace ShippoExample
                 Weight = 2,
                 MassUnit = MassUnits.lb
             };
-            var parcels = new List<CreateParcel>();
-            parcels.Add(parcelTable);
-
 
             // shipment
             var shipmentTable = new CreateShipment
             {
                 AddressTo = toAddressTable,
                 AddressFrom = fromAddressTable,
-                Parcels = (object[])parcels.ToArray(),
                 Async = false
             };
+            shipmentTable.AddParcel(parcelTable);
 
             // create Shipment object
             Console.WriteLine("Creating Shipment object..");

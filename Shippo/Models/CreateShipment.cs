@@ -15,6 +15,7 @@ namespace Shippo.Models
         private string addressToObjectId;
         private string addressReturnObjectId;
         private string customsDeclarationObjectId;
+        private List<object> parcels;
 
         [JsonProperty(PropertyName = "address_from")]
         public object AddressFrom
@@ -71,7 +72,19 @@ namespace Shippo.Models
         }
 
         [JsonProperty(PropertyName = "parcels")]
-        public object[] Parcels { get; set; }
+        public object[] Parcels
+        {
+            get { return this.parcels.ToArray(); }
+            private set { this.parcels = new List<object>(value); }
+        }
+
+        public void AddParcel(object parcel)
+        {
+            if (parcel is CreateParcel || parcel is string)
+                this.parcels.Add(parcel);
+            else
+                throw new ArgumentException("Wrong type");
+        }
 
         [JsonProperty(PropertyName = "shipment_date")]
         public DateTime? ShipmentDate { get; set; }
@@ -134,10 +147,15 @@ namespace Shippo.Models
         public string Metadata { get; set; }
 
         [JsonProperty(PropertyName = "extra")]
-        public object Extra { get; set; }
+        public ShipmentExtra Extra { get; set; }
 
         [JsonProperty(PropertyName = "async")]
         public bool? Async;
+
+        public CreateShipment()
+        {
+            this.parcels = new List<object>();
+        }
 
         public static CreateShipment CreateForBatch(
             BaseAddress addressFrom,
