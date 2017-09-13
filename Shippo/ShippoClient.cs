@@ -30,7 +30,7 @@ namespace Shippo
     {
         public static readonly int RatesReqTimeout = 25;
         public static readonly int TransactionReqTimeout = 25;
-        public static readonly string apiEndpoint = "https://api.goshippo.com/v1";
+        public static readonly string apiEndpoint = "https://api.goshippo.com/";
         private ApiClient apiClient;
 
         // API Resource Constructor
