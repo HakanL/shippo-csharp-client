@@ -9,7 +9,7 @@ namespace Shippo
 {
     public class ApiClient : IDisposable
     {
-        private static readonly string userAgent = "Shippo/v1 CSharpBindings/2.0";
+        private static readonly string userAgent = "Shippo/v4 CSharpBindings/4.0";
         private static readonly Encoding encoding = Encoding.UTF8;
 
         private string apiVersion;
