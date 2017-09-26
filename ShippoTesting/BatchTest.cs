@@ -113,7 +113,10 @@ namespace ShippoTesting
         public async Task TestValidPurchase()
         {
             Batch batch = await GetDefaultObject();
+
             Batch retrieve = await GetValidBatch(batch.ObjectId);
+            Assert.AreEqual(ShippoEnums.Statuses.VALID, retrieve.Status);
+
             Batch purchase = await GetShippoClient().PurchaseBatch(retrieve.ObjectId);
             Assert.AreEqual(ShippoEnums.Statuses.PURCHASING, purchase.Status);
         }
