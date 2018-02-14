@@ -19,7 +19,7 @@ namespace Shippo
         public ApiClient(string accessToken)
         {
             this.accessToken = accessToken;
-            this.apiVersion = null;
+            this.apiVersion = "2017-08-01";
 
             CreateNewHttpClient();
         }
