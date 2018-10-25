@@ -40,7 +40,10 @@ namespace Shippo.Models
         public RateServiceLevel Servicelevel { get; set; }
 
         [JsonProperty(PropertyName = "estimated_days")]
-        public int EstimatedDays { get; set; }
+        public string EstimatedDays { get; set; }
+
+        [JsonProperty(PropertyName = "arrives_by")]
+        public string ArrivesBy { get; set; }
 
         [JsonProperty(PropertyName = "duration_terms")]
         public string DurationTerms { get; set; }
