@@ -35,7 +35,7 @@ namespace Shippo.Models
         public Address AddressReturn { get; set; }
 
         [JsonProperty(PropertyName = "customs_declaration")]
-        public string CustomsDeclaration { get; set; }
+        public CustomsDeclaration CustomsDeclaration { get; set; }
 
         [JsonProperty(PropertyName = "carrier_accounts")]
         public string[] CarrierAccounts;
