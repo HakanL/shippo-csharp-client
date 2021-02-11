@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard1.3</TargetFramework>
     <RootNamespace>Shippo</RootNamespace>
-    <Version>2.0.11</Version>
+    <Version>2.0.12</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>Haukcode.GoShippo</PackageId>
     <Authors>Hakan Lindestaf</Authors>
@@ -14,8 +14,8 @@
     <RepositoryUrl></RepositoryUrl>
     <RepositoryType></RepositoryType>
     <PackageTags>GoShippo</PackageTags>
-    <AssemblyVersion>2.0.11.0</AssemblyVersion>
-    <FileVersion>2.0.11.0</FileVersion>
+    <AssemblyVersion>2.0.12.0</AssemblyVersion>
+    <FileVersion>2.0.12.0</FileVersion>
     <PackageIcon>Icon.png</PackageIcon>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
   </PropertyGroup>

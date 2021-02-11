@@ -21,6 +21,7 @@ namespace ShippoTesting
             Track track = await GetShippoClient().RetrieveTracking(CARRIER, TRACKING_NO);
             Assert.AreEqual(TRACKING_NO, track.TrackingNumber);
             Assert.IsNotNull(track.TrackingStatus);
+            Assert.IsNotNull(track?.TrackingStatus.Substatus);
             Assert.IsNotNull(track.TrackingHistory);
         }
 
