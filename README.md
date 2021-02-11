@@ -1,4 +1,4 @@
-# Shippo C# API wrapper
+# Shippo C# API wrapper [![NuGet Version](http://img.shields.io/nuget/v/Haukcode.GoShippo.svg?style=flat)](https://www.nuget.org/packages/Haukcode.GoShippo/)
 
 Shippo is a shipping API that connects you with [multiple shipping carriers](https://goshippo.com/carriers/) (such as USPS, UPS, DHL, Canada Post, Australia Post, UberRUSH and many others) through one interface.
 
